@@ -1,0 +1,10 @@
+﻿Button,Time Start,Time End,Button X,Button Y,Text
+Intro,00;00;00;00,00;01;45;07,NULL,NULL,Intro
+Segment 1,00;01;45;07,00;02;12;07,1101,2824,Measurements
+Segment 2,00;02;12;07,00;04;20;11,834,1715,Accessible Bathroom 
+Segment 3,00;04;20;11,00;04;59;16,1713,767,Accessible Bedroom 
+Segment 4,00;04;59;16,00;05;50;22,3028,536,Accessible Common Spaces 
+Segment 5,00;05;50;22,00;06;08;28,4264,769,Parking Considerations 
+Segment 6,00;06;08;28,00;07;03;20,5176,1709,Host Access 
+Segment 7,00;07;03;20,00;07;53;25,4912,2824,Additional Items 
+Closing,00;07;53;25,00;08;37;26,NULL,NULL,Closing

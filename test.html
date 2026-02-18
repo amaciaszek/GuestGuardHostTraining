@@ -1,0 +1,254 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"/>
+  <title>GuestGuard Token Flow (Local)</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <style>
+    body { font: 14px/1.4 system-ui, -apple-system, Segoe UI, Roboto, sans-serif; margin: 24px; }
+    label { font-weight: 600; }
+    input[type=text] { width: 640px; max-width: 100%; padding: 6px 8px; }
+    button { margin-right: 8px; padding: 6px 10px; }
+    pre { border: 1px solid #ddd; padding: 10px; max-width: 900px; min-height: 140px; white-space: pre-wrap; background: #fafafa; }
+    small.mono { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; color:#666; }
+  </style>
+</head>
+<body>
+  <h1>GuestGuard Auth Flow — minimal local test</h1>
+  <p><small class="mono">Run with: <strong>npx http-server -p 3000 .</strong> then open <strong>http://localhost:3000/</strong></small></p>
+
+  <!-- 1) Paste the temporary token you got from the platform -->
+  <label for="tempToken">Temporary token</label><br>
+  <input id="tempToken" type="text" placeholder="paste the temporary token here" autocomplete="off" />
+  <button id="btnExchange">Exchange → auth/refresh</button>
+  <button id="btnClear">Clear log</button>
+
+  <pre id="log"></pre>
+
+  <!-- 2) After a successful exchange, enable these simple checks -->
+  <div style="margin-top:10px">
+    <button id="btnGetUser" disabled>GET /auth/v1/user</button>
+    <button id="btnGetProfile" disabled>GET profiles row</button>
+    <button id="btnUpdateProgress" disabled>POST /api/update-progress</button>
+  </div>
+
+<script>
+/* -----------------------------------------------------------------------
+   Quick knobs to tweak if needed
+------------------------------------------------------------------------ */
+const PLATFORM_BASE = 'https://guestguard-platform.vercel.app';
+const SUPABASE_URL  = 'https://uwbwaujbvqctmcpgqhds.supabase.co';
+const SUPABASE_ANON = 'sb_publishable_4thWdEYtuLNTZ0R0F9Bw1w_tzYEyH9R';
+
+/* -----------------------------------------------------------------------
+   Minimal state we care about for this test page
+------------------------------------------------------------------------ */
+let accessToken = null;   // becomes the Supabase "auth" bearer
+let refreshToken = null;  // may be used by your app later (not used here)
+let userId = null;        // filled by exchange payload or /auth/v1/user
+
+/* -----------------------------------------------------------------------
+   Tiny helpers
+------------------------------------------------------------------------ */
+const $ = (id)=>document.getElementById(id);
+const logBox = $('log');
+function log(msg, level='log') {
+  const line = (typeof msg === 'string') ? msg : JSON.stringify(msg, null, 2);
+  logBox.textContent += line + '\n';
+  console[level]?.(line);
+}
+function setActionButtons(enabled) {
+  $('btnGetUser').disabled        = !enabled;
+  $('btnGetProfile').disabled     = !enabled;
+  $('btnUpdateProgress').disabled = !enabled;
+}
+
+/* -----------------------------------------------------------------------
+   Supabase fetch helper (adds Bearer + anon key)
+   NOTE: this assumes accessToken is valid. If you hit 401 here,
+         your token is expired or the exchange response was wrong.
+------------------------------------------------------------------------ */
+async function sbFetch(path, opts={}) {
+  const headers = {
+    'Authorization': `Bearer ${accessToken}`,
+    'apikey': SUPABASE_ANON,
+    'Content-Type': 'application/json',
+    ...(opts.headers || {})
+  };
+
+  console.debug('[sbFetch] →', path, headers);
+  const res = await fetch(`${SUPABASE_URL}${path}`, { ...opts, headers });
+
+  // Keep visibility into failures for debugging:
+  const text = await res.text();
+  let json;
+  try { json = text ? JSON.parse(text) : null; } catch { json = { raw:text }; }
+
+  console.debug('[sbFetch] ←', res.status, json);
+  if (!res.ok) {
+    throw new Error(`Supabase ${res.status}: ${JSON.stringify(json)}`);
+  }
+  return json;
+}
+
+/* -----------------------------------------------------------------------
+   1) Exchange temporary token for access/refresh/user
+   GET /api/training-auth?temp_token=...
+------------------------------------------------------------------------ */
+$('btnExchange').onclick = async () => {
+  logBox.textContent = '';
+  accessToken = refreshToken = userId = null;
+  setActionButtons(false);
+
+  const temp = $('tempToken').value.trim();
+  if (!temp) {
+    log('Please paste a temporary token first.');
+    return;
+  }
+
+  const url = `${PLATFORM_BASE}/api/training-auth?temp_token=${encodeURIComponent(temp)}`;
+  log(`→ EXCHANGE: ${url}`);
+
+  console.time('exchange');
+  try {
+    const res = await fetch(url, { method:'GET' });
+    const data = await res.json().catch(() => ({}));
+    console.timeEnd('exchange');
+
+    log({ exchange_status: res.status, exchange_body: data });
+
+    if (!res.ok) {
+      log('Exchange failed (likely expired or already used temp token).', 'warn');
+      return;
+    }
+
+    // Map common field names defensively (so minor backend name changes don’t break the demo)
+    accessToken  = data.access_token || data.auth_token || null;
+    refreshToken = data.refresh_token || null;
+    userId       = data.user_id || null;
+
+    if (!accessToken) {
+      log('No access token was returned — cannot proceed.', 'warn');
+      return;
+    }
+
+    log('✓ Exchange successful. Access token acquired.');
+    if (!userId) log('Heads up: user_id not provided by exchange. We will try to fill it from /auth/v1/user.');
+
+    setActionButtons(true);
+  } catch (err) {
+    console.timeEnd('exchange');
+    log(`Exchange error: ${err.message}`, 'error');
+  }
+};
+
+/* -----------------------------------------------------------------------
+   2) GET /auth/v1/user — sanity-check the bearer works
+------------------------------------------------------------------------ */
+$('btnGetUser').onclick = async () => {
+  if (!accessToken) return log('No access token in memory. Run the exchange first.', 'warn');
+
+  log('→ /auth/v1/user');
+  console.time('getUser');
+  try {
+    const res = await fetch(`${SUPABASE_URL}/auth/v1/user`, {
+      method: 'GET',
+      headers: {
+        'Authorization': `Bearer ${accessToken}`,
+        'apikey': SUPABASE_ANON,
+        'Content-Type': 'application/json'
+      }
+    });
+
+    const data = await res.json().catch(() => ({}));
+    console.timeEnd('getUser');
+    log({ user_status: res.status, user: data });
+
+    if (!res.ok) {
+      log('Failed to load user. If 401, the token is expired or invalid.', 'warn');
+      return;
+    }
+
+    // If userId wasn’t returned during exchange, grab it here:
+    if (!userId && data?.id) {
+      userId = data.id;
+      log(`userId set from /user → ${userId}`);
+    }
+  } catch (err) {
+    console.timeEnd('getUser');
+    log(`User load error: ${err.message}`, 'error');
+  }
+};
+
+/* -----------------------------------------------------------------------
+   3) GET profiles row — demonstrate a simple table read
+------------------------------------------------------------------------ */
+$('btnGetProfile').onclick = async () => {
+  if (!userId) return log('Need a userId first. Click “GET /auth/v1/user”.', 'warn');
+
+  const path = `/rest/v1/profiles?id=eq.${encodeURIComponent(userId)}&select=training_status,first_name,last_name,is_inspector`;
+  log(`→ ${path}`);
+  console.time('getProfile');
+  try {
+    const profiles = await sbFetch(path, { method: 'GET' });
+    console.timeEnd('getProfile');
+    log({ profiles });
+
+    if (!Array.isArray(profiles) || profiles.length === 0) {
+      log('No matching profile row found for this user.', 'warn');
+    }
+  } catch (err) {
+    console.timeEnd('getProfile');
+    log(`Profile error: ${err.message}`, 'error');
+  }
+};
+
+/* -----------------------------------------------------------------------
+   4) POST /api/update-progress — demonstrate a minimal write
+------------------------------------------------------------------------ */
+$('btnUpdateProgress').onclick = async () => {
+  if (!userId || !accessToken) return log('Need userId + access token first.', 'warn');
+
+  const body = {
+    auth_token: accessToken,
+    user_id: userId,
+    supabase_anon_key: SUPABASE_ANON,
+    // Keep this tiny — just enough to prove the shape & round-trip:
+    training_status: {
+      demo_ping: { progress: 1, updated_at: new Date().toISOString() }
+    }
+  };
+
+  const url = `${PLATFORM_BASE}/api/update-progress`;
+  log(`→ ${url}`);
+  console.time('updateProgress');
+  try {
+    const res = await fetch(url, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      // Browser sets Origin automatically; server should CORS-allow http://localhost:3000
+      body: JSON.stringify(body)
+    });
+
+    const data = await res.json().catch(() => ({}));
+    console.timeEnd('updateProgress');
+    log({ update_status: res.status, update_body: data });
+
+    if (!res.ok) {
+      log('Progress update rejected. Check CORS allowlist and token freshness.', 'warn');
+    } else {
+      log('✓ Progress update accepted.');
+    }
+  } catch (err) {
+    console.timeEnd('updateProgress');
+    log(`Progress update error: ${err.message}`, 'error');
+  }
+};
+
+/* -----------------------------------------------------------------------
+   Small quality-of-life: clear the log
+------------------------------------------------------------------------ */
+$('btnClear').onclick = () => { logBox.textContent = ''; console.clear(); };
+</script>
+</body>
+</html>

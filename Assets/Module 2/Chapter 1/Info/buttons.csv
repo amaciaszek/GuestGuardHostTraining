@@ -1,0 +1,9 @@
+﻿Button,Time Start,Time End,Button X,Button Y,Text
+Intro,00;00;00;00,00;00;15;15,NULL,NULL,Intro
+Segment 1,00;00;15;15,00;00;37;28,960,2764,What Utilities Are & Why They Matter
+Segment 2,00;00;37;28,00;01;03;04,847,1515,Alternative Heating Sources
+Segment 3,00;01;03;04,00;01;24;23,1952,683,Air Conditioning Units
+Segment 4,00;01;24;23,00;01;39;18,4049,683,Water Availability
+Segment 5,00;01;39;18,00;02;07;15,5158,1517,WiFi Access & Standards
+Segment 6,00;02;07;15,00;02;38;21,5048,2758,Hypothetical Example
+Closing,00;02;38;21,00;03;00;29,NULL,NULL,Closing

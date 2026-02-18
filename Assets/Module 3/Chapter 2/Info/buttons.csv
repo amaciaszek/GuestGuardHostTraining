@@ -1,0 +1,7 @@
+﻿Button,Time Start,Time End,Button X,Button Y,Text
+Intro,00;00;00;00,00;00;19;12,NULL,NULL,Intro
+Segment 1,00;00;19;12,00;00;41;21,754,2365,Understanding General Hazards
+Segment 2,00;00;41;21,00;01;05;16,1558,1129,Walkways & Pathways
+Segment 3,00;01;05;16,00;01;26;04,4457,1129,Landscaping & Security Risks
+Segment 4,00;01;26;04,00;01;50;07,5239,2362,Hypothetical Example
+Closing,00;01;50;07,00;02;11;28,NULL,NULL,Closing

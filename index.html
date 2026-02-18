@@ -1,0 +1,375 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <title>Training Module</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <link rel="icon" href="data:,">
+  <link rel="stylesheet" href="style.css">
+
+  <script>
+    // ===== DEBUG CONFIGURATION =====
+    // Set to true to show the debug panel, false to hide it
+    const SHOW_DEBUG_PANEL = false;
+  </script>
+
+  <style>
+    :root{
+      --gg-bg:#0b0f14;
+      --gg-surface:#0f141b;
+      --gg-border:#1d2733;
+      --gg-ink:#d7e2f1;
+      --gg-ink-dim:#9fb0c5;
+      --gg-accent:#00e0ff;
+      --gg-accent-2:#7cf6c9;
+      --gg-bad:#ff6b6b;
+      --gg-good:#7CFCB5;
+      --gg-mono:'Courier New', ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+    }
+    .auth-wrap{
+      position: sticky; top: 0; z-index: 1100;
+      background: linear-gradient(180deg, rgba(11,15,20,.95), rgba(11,15,20,.85));
+      backdrop-filter: blur(6px);
+      border-bottom: 1px solid var(--gg-border);
+      color: var(--gg-ink);
+      font-family: var(--gg-mono);
+      transition: all 0.3s ease;
+    }
+    .auth-wrap.collapsed {
+      border-bottom: none;
+    }
+    .auth-container{
+      max-width: 1200px; margin: 0 auto; padding: 12px 16px;
+    }
+    .auth-header{
+      display: flex; justify-content: space-between; align-items: center;
+    }
+    .auth-header h1{
+      font-size: 16px; line-height: 1; font-weight: 700; letter-spacing: .02em;
+      color: var(--gg-accent);
+      display: flex; align-items: center; gap: 8px;
+      margin: 0;
+    }
+    #authContent {
+      display: grid; gap: 12px;
+      max-height: 400px;
+      overflow: hidden;
+      transition: max-height 0.3s ease, opacity 0.3s ease, margin-top 0.3s ease;
+      margin-top: 10px;
+    }
+    #authContent.collapsed {
+      max-height: 0;
+      opacity: 0;
+      margin-top: 0;
+    }
+    .auth-box{
+      background: var(--gg-surface);
+      border: 1px solid var(--gg-border);
+      border-radius: 8px; padding: 12px;
+    }
+    .auth-status{
+      padding: 10px 14px;
+      border-radius: 8px;
+      font-weight: 700;
+      font-size: 13px;
+      border: 1px solid var(--gg-border);
+    }
+    .auth-status.ok{
+      background: #133523;
+      border-color: #1c7741;
+      color: var(--gg-good);
+    }
+    .auth-status.bad{
+      background: #351318;
+      border-color: #5e141f;
+      color: var(--gg-bad);
+    }
+    .label{font-size: 12px; color: var(--gg-ink-dim); margin-bottom: 6px;}
+    input.auth-input{
+      width:100%; background:#05080c; color:var(--gg-ink);
+      border:1px solid var(--gg-border); border-radius:6px; padding:10px;
+      font-family:var(--gg-mono); font-size:12px;
+      outline:none;
+    }
+    .btn-row{display:flex;gap:8px;margin-top:8px}
+    .btn, a.btn{
+      display:inline-block; text-decoration:none; cursor:pointer;
+      padding:9px 14px; border-radius:7px; font-weight:700; font-size:12px;
+      color:#001014; background:var(--gg-accent);
+      border:1px solid #00bbff55;
+    }
+    .btn.alt{ background:#0b2233; color:var(--gg-ink); border-color:#14405e }
+    .btn.warn{ background:#221013; color:#ffd6db; border-color:#5e141f }
+    .btn:disabled{ opacity:0.5; cursor:not-allowed; }
+    .tiny{opacity:.8; font-size:11px; color:var(--gg-ink-dim); margin-top:6px}
+    
+    /* Hide hotspots while background is loading - using !important to override external styles */
+    .stage.loading-background .hotspot,
+    .stage.loading-background button.hotspot,
+    .stage.loading-background .hotspot.clickable,
+    .stage.loading-background .hotspot.locked,
+    .stage.loading-background .hotspot.done {
+      opacity: 0 !important;
+      visibility: hidden !important;
+      pointer-events: none !important;
+      transition: opacity 0.4s ease, visibility 0.4s ease !important;
+    }
+    
+    /* Ensure hotspots fade in smoothly after loading */
+    .stage:not(.loading-background) .hotspot {
+      transition: opacity 0.4s ease, visibility 0.4s ease;
+    }
+  </style>
+</head>
+        
+<body>
+  <div class="auth-wrap" role="region" aria-label="Authentication">
+    <div class="auth-container">
+      <div class="auth-header">
+        <h1>🔐 GuestGuard • Authentication</h1>
+        <button id="toggleAuth" class="btn alt" style="padding: 6px 12px; font-size: 11px;">Collapse</button>
+      </div>
+      <div id="authContent">
+        <div class="auth-box">
+          <div class="auth-status bad" id="authStatus">Not Authenticated</div>
+        </div>
+        
+        <div class="auth-box">
+          <div class="label">Temporary Token:</div>
+          <input id="tempTokenInput" class="auth-input" placeholder="Paste your temp_token here or it will auto-detect from URL"/>
+          <div class="btn-row">
+            <button id="btnAuthenticate" class="btn">Authenticate</button>
+            <button id="btnClearAuth" class="btn warn">Clear Auth</button>
+          </div>
+          <div class="tiny">Token will be saved and automatically refreshed. Your progress is synced to the cloud.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <main class="frame" role="main" aria-label="Training Module">
+    <div class="titlebar">
+      <span class="title-text" id="moduleTitle">Loading…</span>
+    </div>
+    <aside class="sidebar" id="sidebar">
+      <div class="sidebar-header">Training Modules</div>
+      <ul class="module-list" id="moduleList"></ul>
+    </aside>
+    <section class="stage" aria-label="Main visual with hotspots" id="stage">
+      <div id="innerWindow" class="inner-window" aria-modal="true" role="dialog" aria-label="Content viewer">
+        <header>
+          <span id="viewerTitle">Narration</span>
+          <div class="right"><button id="closeViewer" class="btn" title="Close">×</button></div>
+        </header>
+        <div id="viewer" class="viewer"></div>
+      </div>
+      <audio id="vo" preload="metadata"></audio>
+    </section>
+  </main>
+
+  <div id="progressPanel" style="
+    position: fixed; 
+    top: 70px; 
+    right: 20px; 
+    width: 420px; 
+    max-height: calc(100vh - 100px);
+    background: linear-gradient(135deg, rgba(15,20,27,0.98), rgba(11,15,20,0.98));
+    border: 1px solid #1d2733;
+    border-radius: 16px;
+    padding: 16px;
+    z-index: 999;
+    box-shadow: 0 8px 32px rgba(0,0,0,0.4);
+    backdrop-filter: blur(10px);
+    overflow-y: auto;
+    font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+    display: none;
+  ">
+    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
+      <h3 style="margin: 0; color: #00e0ff; font-size: 14px; font-weight: 700;">📊 Training Progress</h3>
+      <div style="display: flex; gap: 8px; align-items: center;">
+        <button id="refreshProgressBtn" style="background: rgba(0,224,255,0.1); border: 1px solid #1d2733; color: #00e0ff; cursor: pointer; font-size: 11px; padding: 4px 8px; border-radius: 6px; font-weight: 600;" title="Refresh from server">🔄</button>
+        <button id="closePanelBtn" style="background: none; border: none; color: #9fb0c5; cursor: pointer; font-size: 20px; padding: 0; width: 24px; height: 24px;">×</button>
+      </div>
+    </div>
+    
+    <div id="overallProgress" style="margin-bottom: 16px; padding: 14px; background: rgba(0,224,255,0.05); border: 1px solid #1d2733; border-radius: 10px;">
+      <div style="font-size: 11px; color: #9fb0c5; margin-bottom: 6px; font-weight: 600; letter-spacing: 0.5px;">OVERALL COMPLETION</div>
+      <div style="font-size: 32px; font-weight: 700; color: #7CFCB5; line-height: 1; margin-bottom: 8px;">
+        <span id="overallPercent">0</span>%
+      </div>
+      <div style="font-size: 11px; color: #7cf6c9; margin-bottom: 8px;">
+        <span id="segmentCount">0/0</span> segments completed
+      </div>
+      <div style="background: #05080c; height: 6px; border-radius: 3px; overflow: hidden; margin-bottom: 8px;">
+        <div id="overallBar" style="background: linear-gradient(90deg, #00e0ff, #7cf6c9); height: 100%; width: 0%; transition: width 0.5s ease;"></div>
+      </div>
+      <div style="font-size: 10px; color: #9fb0c5;" id="lastUpdated">Not synced</div>
+    </div>
+    
+    <div style="margin-bottom: 12px;">
+      <div style="font-size: 11px; color: #9fb0c5; margin-bottom: 8px; font-weight: 600; letter-spacing: 0.5px;">MODULES</div>
+      <div id="moduleProgressList"></div>
+    </div>
+    
+    <div id="debugInfo" style="margin-top: 12px; padding: 10px; background: rgba(255,107,107,0.05); border: 1px solid rgba(255,107,107,0.2); border-radius: 8px; display: none;">
+      <div style="font-size: 10px; color: #ff6b6b; margin-bottom: 4px; font-weight: 600;">DEBUG INFO</div>
+      <div id="debugText" style="font-size: 9px; color: #9fb0c5; font-family: monospace; white-space: pre-wrap;"></div>
+    </div>
+  </div>
+
+  <button id="toggleProgressBtn" style="
+    position: fixed;
+    top: 70px;
+    right: 20px;
+    background: linear-gradient(135deg, #00e0ff, #0099cc);
+    color: #000;
+    border: none;
+    padding: 12px 18px;
+    border-radius: 12px;
+    cursor: pointer;
+    font-weight: 700;
+    font-size: 13px;
+    box-shadow: 0 4px 15px rgba(0, 224, 255, 0.3);
+    z-index: 998;
+    font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  ">📊 Progress</button>
+
+  <!-- External Dependencies -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  
+  <!-- Application Scripts - Load in order -->
+  
+  <!-- Debug Scripts - Load FIRST for iOS debugging -->
+  <script src="js/debug-logger.js"></script>
+  <script src="js/auth-debug.js"></script>
+  <script src="js/config.js"></script>
+  <script src="js/training-api.js"></script>
+  <script src="js/modular-training-system.js"></script>
+  <script src="js/app.js"></script>
+  
+  <!-- Debug Panel Visibility Control -->
+  <script>
+    (function() {
+      'use strict';
+      
+      // Hide/show debug panel based on config
+      document.addEventListener('DOMContentLoaded', () => {
+        const debugInfo = document.getElementById('debugInfo');
+        
+        if (debugInfo) {
+          if (typeof SHOW_DEBUG_PANEL !== 'undefined' && SHOW_DEBUG_PANEL === true) {
+            debugInfo.style.display = 'block';
+            console.log('🔧 Debug panel enabled (SHOW_DEBUG_PANEL = true)');
+          } else {
+            debugInfo.style.display = 'none';
+            console.log('🔇 Debug panel hidden (SHOW_DEBUG_PANEL = false)');
+          }
+        }
+        
+        // Also hide any debug buttons/toggles
+        if (typeof SHOW_DEBUG_PANEL !== 'undefined' && SHOW_DEBUG_PANEL === false) {
+          // Hide debug logger button if it exists
+          const style = document.createElement('style');
+          style.textContent = `
+            #debugToggle,
+            .debug-toggle,
+            [class*="debug-button"],
+            [id*="debug-button"],
+            [id*="Debug"],
+            button[onclick*="debug"],
+            .ios-debug-toggle {
+              display: none !important;
+              visibility: hidden !important;
+              opacity: 0 !important;
+              pointer-events: none !important;
+            }
+          `;
+          document.head.appendChild(style);
+          
+          // Also aggressively remove debug button from DOM after a short delay
+          setTimeout(() => {
+            // Find and remove any button with "debug" in text content
+            const allButtons = document.querySelectorAll('button');
+            allButtons.forEach(btn => {
+              if (btn.textContent.toLowerCase().includes('debug')) {
+                console.log('🗑️ Removing debug button from DOM');
+                btn.remove();
+              }
+            });
+            
+            // Also check for common debug button IDs/classes
+            const debugElements = document.querySelectorAll(
+              '#debugToggle, .debug-toggle, [id*="debug"], [class*="debug"]'
+            );
+            debugElements.forEach(el => {
+              // Only remove if it looks like a button/toggle, not data containers
+              if (el.tagName === 'BUTTON' || el.onclick || el.style.cursor === 'pointer') {
+                console.log('🗑️ Removing debug element:', el.id || el.className);
+                el.remove();
+              }
+            });
+          }, 500);
+        }
+      });
+    })();
+  </script>
+</body>
+
+  <!-- Orientation Change Handler - Fixes viewer going off-screen when rotating -->
+  <script>
+    (function() {
+      'use strict';
+      
+      function repositionViewer() {
+        const viewer = document.getElementById('innerWindow');
+        if (!viewer || !viewer.classList.contains('active')) return;
+        
+        const vw = window.innerWidth;
+        const vh = window.innerHeight;
+        const rect = viewer.getBoundingClientRect();
+        const maxWidth = vw * 0.95;
+        const maxHeight = vh * 0.90;
+        const isOutside = rect.right > vw || rect.bottom > vh || rect.left < 0 || rect.top < 0;
+        const isTooLarge = rect.width > maxWidth || rect.height > maxHeight;
+        
+        if (isOutside || isTooLarge) {
+          const newWidth = Math.min(rect.width, maxWidth);
+          const newHeight = Math.min(rect.height, maxHeight);
+          viewer.style.left = '50%';
+          viewer.style.top = '50%';
+          viewer.style.transform = 'translate(-50%, -50%)';
+          viewer.style.width = newWidth + 'px';
+          viewer.style.height = newHeight + 'px';
+          viewer.style.maxWidth = '95vw';
+          viewer.style.maxHeight = '90vh';
+        }
+      }
+      
+      window.addEventListener('orientationchange', () => setTimeout(repositionViewer, 100));
+      
+      let resizeTimer;
+      window.addEventListener('resize', () => {
+        clearTimeout(resizeTimer);
+        resizeTimer = setTimeout(() => {
+          const viewer = document.getElementById('innerWindow');
+          if (viewer && viewer.classList.contains('active')) repositionViewer();
+        }, 150);
+      });
+      
+      const observer = new MutationObserver((mutations) => {
+        mutations.forEach((mutation) => {
+          if (mutation.type === 'attributes' && mutation.attributeName === 'class') {
+            const viewer = mutation.target;
+            if (viewer.classList.contains('active')) setTimeout(repositionViewer, 50);
+          }
+        });
+      });
+      
+      document.addEventListener('DOMContentLoaded', () => {
+        const viewer = document.getElementById('innerWindow');
+        if (viewer) observer.observe(viewer, { attributes: true, attributeFilter: ['class'] });
+      });
+    })();
+  </script>
+</body>
+</html>

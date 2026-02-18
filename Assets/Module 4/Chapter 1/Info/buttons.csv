@@ -1,0 +1,7 @@
+﻿Button,Time Start,Time End,Button X,Button Y,Text
+Intro,00;00;00;00,00;00;22;00,NULL,NULL,Intro
+Segment 1,00;00;22;00,00;01;01;22,754,2365,Types of Locks
+Segment 2,00;01;01;22,00;01;19;21,1558,1129,Guest Safes
+Segment 3,00;01;19;21,00;01;42;16,4457,1129,Exterior Considerations
+Segment 4,00;01;42;16,00;02;19;23,5239,2362,Hypothetical Example
+Closing,00;02;19;23,00;02;40;02,NULL,NULL,Closing

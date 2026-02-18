@@ -1,0 +1,9 @@
+﻿Button,Time Start,Time End,Button X,Button Y,Text
+Intro,00;00;00;00,00;00;13;19,NULL,NULL,Intro
+Segment 1,00;00;13;19,00;00;43;26,960,2764,Electrical Systems & Breaker Boxes
+Segment 2,00;00;43;26,00;01;19;10,847,1515,Outlets
+Segment 3,00;01;19;10,00;01;47;10,1952,683,Heating Types in the Home
+Segment 4,00;01;47;10,00;02;11;08,4049,683,Standards for Open Flames
+Segment 5,00;02;11;08,00;02;37;29,5158,1517,Certification & Training
+Segment 6,00;02;37;29,00;03;00;09,5048,2758,Flammable Gas Storage
+Closing,00;03;00;09,00;03;24;00,NULL,NULL,Closing

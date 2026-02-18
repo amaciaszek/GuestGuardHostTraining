@@ -1,0 +1,6 @@
+﻿Button,Time Start,Time End,Button X,Button Y,Text
+Intro,00;00;00;00,00;00;23;12,NULL,NULL,Intro
+Segment 1,00;00;23;12,00;00;38;02,895,1987,Why Amenities Matter
+Segment 2,00;00;38;02,00;01;33;17,4220,663,Specific Amenities for Hosts to Consider
+Segment 3,00;01;33;17,00;02;13;19,5129,2627,Hypothetical Example
+Closing,00;02;13;19,00;02;21;20,NULL,NULL,Closing

@@ -1,0 +1,1172 @@
+/* ============================================
+   ANIMATION SPEED CONTROL
+   Edit this ONE line to change animation speed!
+   ============================================ */
+:root {
+  --animation-duration: 0.4s;  /* Change this value: smaller = faster, larger = slower */
+  
+  /* Other variables */
+  --stage-max-width: 1200px;
+  --bg: #0e0e12;
+  --active: #f8fafc;
+  --completed: #0b242c;
+  --locked: #4a4a4a;
+  --badge-offset: 2px;
+  --badge-size: 20px;
+  --sidebar-width: 220px;
+}
+
+/* ============================================
+   BASE STYLES
+   ============================================ */
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  min-height: 100svh;
+  display: grid;
+  place-items: center;
+  background: var(--bg);
+  color: #e9eef5;
+  font-family: system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif;
+
+  /* NEW: always reserve space for the vertical scrollbar so
+     viewport width never changes and the stage never resizes */
+  overflow-y: scroll;
+}
+
+
+.frame {
+  /* Width no longer tied to vw, so scrollbars won't change the stage size */
+  width: 100%;
+  max-width: var(--stage-max-width);
+  margin-inline: auto;
+  
+  /* Large fixed height for prominent stage display */
+  height: 90vh;
+  min-height: 700px;
+
+  border-radius: 28px;
+  border: 2px solid rgba(255, 255, 255, .12);
+  box-shadow: 0 20px 60px rgba(0, 0, 0, .55), inset 0 0 0 1px rgba(255, 255, 255, .04);
+  overflow: hidden;
+  background: #11151a;
+
+  display: grid;
+  grid-template-columns: var(--sidebar-width) 1fr; /* fixed sidebar width */
+  grid-template-rows: auto 1fr;
+}
+
+/* ============================================
+   TITLE BAR
+   ============================================ */
+.titlebar {
+  padding: 10px 14px;
+  border-bottom: 1px solid rgba(255, 255, 255, .08);
+  font-weight: 600;
+  font-size: 14px;
+  letter-spacing: .2px;
+  background: linear-gradient(180deg, rgba(255, 255, 255, .05), transparent);
+  grid-column: 1 / -1;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.titlebar .logo {
+  width: 28px;
+  height: 28px;
+  flex-shrink: 0;
+}
+
+.titlebar .title-text {
+  flex: 1;
+}
+
+/* ============================================
+   SIDEBAR
+   ============================================ */
+.sidebar {
+  background: #0a0a0f;
+  border-right: 1px solid rgba(255, 255, 255, .08);
+
+  /* Sidebar should always match the stage row height and scroll internally */
+  height: 100%;
+  overflow-y: auto;
+  overflow-x: hidden;
+
+  /* Hide scrollbar while maintaining scroll functionality */
+  scrollbar-width: none; /* Firefox */
+  -ms-overflow-style: none; /* IE and Edge */
+}
+
+
+.sidebar::-webkit-scrollbar {
+  display: none; /* Chrome, Safari, Opera */
+}
+
+.sidebar-header {
+  padding: 12px 10px;
+  font-weight: 700;
+  font-size: 12px;
+  color: #00e0ff;
+  border-bottom: 1px solid rgba(255, 255, 255, .08);
+  background: rgba(0, 224, 255, .05);
+}
+
+.module-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.module-group {
+  border-bottom: 1px solid rgba(255, 255, 255, .05);
+}
+
+.module-header {
+  padding: 10px 8px;
+  cursor: pointer;
+  background: rgba(255, 255, 255, .03);
+  transition: all .2s ease;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-weight: 700;
+  font-size: 11px;
+  letter-spacing: .2px;
+}
+
+.module-header:hover {
+  background: rgba(255, 255, 255, .08);
+}
+
+.module-header.current-module {
+  background: rgba(0, 224, 255, .12);
+  color: #00e0ff;
+}
+
+.module-expand-icon {
+  width: 12px;
+  height: 12px;
+  display: grid;
+  place-items: center;
+  font-size: 9px;
+  transition: transform .2s ease;
+  flex-shrink: 0;
+}
+
+.module-header.expanded .module-expand-icon {
+  transform: rotate(90deg);
+}
+
+.module-name {
+  flex: 1;
+}
+
+.chapter-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: none;
+}
+
+.module-group .chapter-list.expanded {
+  display: block;
+}
+
+.chapter-group {
+  margin-bottom: 2px;
+}
+
+.chapter-header {
+  padding: 8px 8px 8px 18px;
+  cursor: pointer;
+  border-left: 3px solid transparent;
+  transition: all .2s ease;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 10px;
+  line-height: 1.2;
+  font-weight: 600;
+  background: rgba(0, 0, 0, .15);
+}
+
+.chapter-header:hover {
+  background: rgba(255, 255, 255, .06);
+}
+
+.chapter-header.has-current {
+  border-left-color: #00e0ff;
+  background: rgba(0, 224, 255, .08);
+}
+
+.chapter-header.all-completed {
+  border-left-color: #22c55e;
+}
+
+.chapter-expand-icon {
+  width: 12px;
+  height: 12px;
+  display: grid;
+  place-items: center;
+  font-size: 9px;
+  transition: transform .2s ease;
+  flex-shrink: 0;
+}
+
+.chapter-header.expanded .chapter-expand-icon {
+  transform: rotate(90deg);
+}
+
+.chapter-title {
+  flex: 1;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.segment-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: none;
+  background: rgba(0, 0, 0, .25);
+}
+
+.segment-list.expanded {
+  display: block;
+}
+
+.segment-item {
+  padding: 6px 8px 6px 32px;
+  cursor: pointer;
+  border-left: 3px solid transparent;
+  transition: all .2s ease;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 9px;
+  line-height: 1.2;
+}
+
+.segment-item:hover {
+  background: rgba(255, 255, 255, .05);
+}
+
+.segment-item.locked {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+.segment-item.current {
+  background: rgba(0, 224, 255, .15);
+  border-left-color: #00e0ff;
+  font-weight: 600;
+}
+
+.segment-item.completed {
+  border-left-color: #22c55e;
+}
+
+.segment-badge {
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background: #2a2a2a;
+  color: #fff;
+  display: grid;
+  place-items: center;
+  font-size: 8px;
+  font-weight: 700;
+  flex-shrink: 0;
+}
+
+.segment-item.completed .segment-badge {
+  background: #22c55e;
+}
+
+.segment-item.completed .segment-badge::after {
+  content: '✓';
+}
+
+.segment-item.current .segment-badge {
+  background: #00e0ff;
+  color: #000;
+}
+
+.segment-item.locked .segment-badge {
+  background: #1a1a1a;
+  color: #666;
+}
+
+.segment-name {
+  flex: 1;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* ============================================
+   STAGE (Main Area)
+   ============================================ */
+.stage {
+  position: relative;
+  width: 100%;
+  max-width: 100%;
+  max-height: 100%;
+  aspect-ratio: 6000/4000;
+  background: center / contain no-repeat;
+  background-color: #000;
+  align-self: start;
+  justify-self: center;
+}
+/* ============================================
+   HOTSPOTS
+   ============================================ */
+.hotspot {
+  position: absolute;
+  display: grid;
+  place-items: center;
+  transform: translate(-50%, -50%);
+  cursor: pointer;
+  font-weight: 800;
+  color: #333;
+  font-size: 14px;
+  letter-spacing: .6px;
+  border: 3px solid transparent;
+  transition: transform .2s ease, opacity .2s ease, background .2s ease, border-color .2s ease, box-shadow .2s ease;
+}
+
+.hotspot.circle {
+  border-radius: 50%;
+}
+
+.hotspot.oval {
+  border-radius: 9999px;
+  padding: 6px 16px;
+}
+
+.hotspot.pill {
+  position: absolute;
+  transform: none;
+  border-radius: 9999px;
+  padding: 10px 18px;
+  font-size: 16px;
+}
+
+.hotspot:not(.pill) {
+  font-size: 0;
+  line-height: 0;
+}
+
+.hotspot.locked {
+  pointer-events: none;
+  opacity: 0.3;
+  background: rgba(74, 74, 74, 0.3);
+  border-color: var(--locked);
+}
+
+.hotspot.clickable {
+  pointer-events: auto;
+  background: rgba(248, 250, 252, 0.2);
+  border-color: #333;
+  animation: megaPulse 1.1s ease-in-out infinite;
+}
+
+.hotspot.clickable:hover {
+  transform: translate(-50%, -50%) scale(1.05);
+}
+
+.hotspot.pill.clickable {
+  background: var(--active);
+}
+
+.hotspot.pill.clickable:hover {
+  transform: none;
+}
+
+.hotspot.done {
+  pointer-events: auto;
+  background: rgba(11, 36, 44, 0.3);
+  border-color: #fff;
+  color: #fff;
+  box-shadow: 0 0 0 3px rgba(11, 36, 44, .5);
+}
+
+.hotspot.pill.done {
+  background: var(--completed);
+}
+
+.hotspot::before {
+  content: attr(data-number);
+  position: absolute;
+  top: var(--badge-offset);
+  left: var(--badge-offset);
+  width: var(--badge-size);
+  height: var(--badge-size);
+  display: grid;
+  place-items: center;
+  background: #333;
+  color: #fff;
+  border-radius: 50%;
+  font-size: 12px;
+  font-weight: 700;
+  z-index: 2;
+  pointer-events: none;
+}
+
+/* Desktop: Pill badges positioned to avoid text overlap */
+.hotspot.pill::before {
+  top: -8px;
+  left: -8px;
+}
+
+.hotspot.done::after {
+  content: '✓';
+  position: absolute;
+  top: var(--badge-offset);
+  right: var(--badge-offset);
+  width: var(--badge-size);
+  height: var(--badge-size);
+  display: grid;
+  place-items: center;
+  background: #22c55e;
+  color: #000;
+  border-radius: 50%;
+  font-size: 12px;
+  font-weight: 700;
+  z-index: 2;
+}
+
+@keyframes megaPulse {
+  0% { box-shadow: 0 0 0 0 rgba(248, 250, 252, 0.6); }
+  50% { box-shadow: 0 0 0 15px rgba(248, 250, 252, 0); }
+  100% { box-shadow: 0 0 0 0 rgba(248, 250, 252, 0); }
+}
+
+/* ============================================
+   VIEWER WINDOW (Inner Window)
+   ============================================ */
+.inner-window {
+  position: fixed; /* Changed from absolute to fixed for viewport-relative positioning */
+  /* No default position - JavaScript controls all positioning via inline styles */
+  z-index: 999;
+  background: #000;
+  border: 1px solid rgba(255, 255, 255, .15);
+  border-radius: 18px;
+  overflow: hidden;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, .8);
+  display: none;
+  flex-direction: column;
+  transition: all var(--animation-duration) linear;
+  opacity: 0;
+  
+  /* CRITICAL: Keep window within viewport during orientation changes */
+  max-width: 95vw !important;
+  max-height: 90vh !important;
+}
+
+.inner-window.active {
+  display: flex;
+}
+
+/* No size overrides - JavaScript controls all sizing via inline styles */
+
+.inner-window header {
+  background: #1a1a1a;
+  border-bottom: 1px solid rgba(255, 255, 255, .1);
+  padding: 10px 14px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-weight: 600;
+  transition: all var(--animation-duration) linear;
+  transform-origin: top left;
+}
+
+#viewerTitle {
+  font-size: 14px;
+  color: #00e0ff;
+}
+
+.inner-window header .right {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+
+#closeViewer {
+  background: #ff4444;
+  color: #fff;
+  border: none;
+  padding: 4px 10px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: 800;
+  font-size: 18px;
+  line-height: 1;
+}
+
+.header-real-life-btn {
+  background: rgba(0, 224, 255, .1);
+  color: #00e0ff;
+  border: 1px solid rgba(0, 224, 255, .3);
+  padding: 6px 12px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 11px;
+  font-weight: 600;
+  transition: all .2s ease;
+}
+
+.header-real-life-btn:hover {
+  background: rgba(0, 224, 255, .2);
+}
+
+/* ============================================
+   VIEWER (Content Area)
+   ============================================ */
+.viewer {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  align-items: stretch;
+  padding: 12px;
+  background: #000;
+  height: 100%;
+  min-height: 0;
+  transition: transform var(--animation-duration) linear, 
+              opacity var(--animation-duration) linear;
+  transform-origin: top left;
+  /* Enable scrolling for overflow content */
+  overflow-y: auto;
+  overflow-x: hidden;
+}
+
+.mediaArea {
+  position: relative;
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  border-radius: 10px;
+  background: #000;
+}
+
+.mediaArea video,
+.mediaArea img {
+  max-width: 100%;
+  max-height: 100%;
+  border-radius: 8px;
+}
+
+.mediaArea video {
+  /* FIXED: Ensure full video height is visible with black bars on sides if needed */
+  width: auto;
+  height: 100%;
+  display: block;
+  object-fit: contain;
+  background: #000;
+}
+
+.mediaArea img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+
+.caption {
+  position: absolute;
+  left: 12px;
+  right: auto;
+  bottom: 12px;
+  display: inline-block;
+  width: fit-content;
+  max-width: calc(100% - 24px);
+  background: rgba(0, 0, 0, .85);
+  color: #fff;
+  padding: 12px 16px;
+  border-radius: 10px;
+  font-size: 18px;
+  line-height: 1.5;
+  pointer-events: none;
+  z-index: 2;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, .6);
+}
+
+/* Caption in subs-only mode (no video/image) */
+.subs-only .caption {
+  position: static;
+  max-width: 100%;
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+  hyphens: auto;
+  /* Comfortable reading size - not too large */
+  font-size: 18px;
+  line-height: 1.6;
+}
+
+/* Wrapper for subs-only content */
+.subs-only {
+  /* HIDE SCROLLBAR: No longer needed with larger box */
+  overflow-y: hidden;
+  max-height: 100%;
+}
+
+/* Ensure text content doesn't overflow */
+.subs-text {
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+  hyphens: auto;
+  /* Comfortable reading size for narration text */
+  font-size: 18px;
+  line-height: 1.6;
+}
+
+/* ============================================
+   AUDIO CONTROLS
+   ============================================ */
+.audio-ui {
+  flex: 0 0 auto;
+  width: 100%;
+  display: grid;
+  gap: 10px;
+}
+
+.row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  justify-content: space-between;
+}
+
+.biglabel {
+  font-weight: 700;
+}
+
+.controls {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.btn {
+  background: #2a2a2a;
+  color: #fff;
+  border: 1px solid rgba(255, 255, 255, .2);
+  padding: 8px 12px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 40px;
+}
+
+.btn[disabled] {
+  opacity: .5;
+  cursor: not-allowed;
+}
+
+.btn[title]:hover::after {
+  content: attr(title);
+  position: absolute;
+  bottom: 120%;
+  left: 50%;
+  transform: translateX(-50%);
+  background: #333;
+  color: #fff;
+  padding: 4px 8px;
+  border-radius: 4px;
+  font-size: 12px;
+  white-space: nowrap;
+  z-index: 100;
+}
+
+.bar {
+  position: relative;
+  height: 14px;
+  border-radius: 9999px;
+  overflow: hidden;
+  background: linear-gradient(90deg, rgba(255, 255, 255, .12), rgba(255, 255, 255, .06));
+  border: 1px solid rgba(255, 255, 255, .2);
+  pointer-events: none;
+}
+
+.fill {
+  position: absolute;
+  inset: 0 auto 0 0;
+  width: 0%;
+  background: linear-gradient(90deg, #00e0ff, #22c55e);
+  box-shadow: 0 0 10px rgba(0, 224, 255, .9);
+}
+
+.time {
+  font-variant-numeric: tabular-nums;
+}
+
+.viewer-actions {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  justify-content: flex-end;
+  padding-top: 12px;
+}
+
+.next-btn {
+  background: #00e0ff;
+  color: #000;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 8px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all .2s ease;
+}
+
+.next-btn:hover {
+  background: #22c55e;
+}
+
+.close-btn {
+  background: #666;
+  color: #fff;
+  border: none;
+  padding: 10px 16px;
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+/* ============================================
+   CHAPTER COMPLETE DIALOG
+   ============================================ */
+.chapter-complete-overlay {
+  position: fixed;
+  inset: 0;
+  display: none;
+  place-items: center;
+  background: rgba(0, 0, 0, .85);
+  backdrop-filter: blur(8px);
+  z-index: 99999; /* Very high z-index to be above everything */
+  animation: fadeIn 0.3s ease-out;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+.chapter-complete-dialog {
+  background: linear-gradient(135deg, #0f1216, #1a1f28);
+  border: 2px solid #00e0ff;
+  border-radius: 20px;
+  padding: 32px;
+  width: min(520px, 90vw);
+  box-shadow: 
+    0 20px 60px rgba(0, 0, 0, .8),
+    0 0 40px rgba(0, 224, 255, 0.3);
+  text-align: center;
+  animation: slideIn 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+@keyframes slideIn {
+  from {
+    transform: translateY(-50px) scale(0.9);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0) scale(1);
+    opacity: 1;
+  }
+}
+
+.chapter-complete-dialog h2 {
+  margin: 0 0 16px 0;
+  font-size: 24px;
+  color: #22c55e;
+}
+
+.chapter-complete-dialog p {
+  margin: 0 0 20px 0;
+  color: #cfd7e3;
+  line-height: 1.5;
+}
+
+.chapter-complete-dialog .actions {
+  display: flex;
+  gap: 12px;
+  justify-content: center;
+}
+
+.chapter-complete-dialog .btn {
+  background: rgba(42, 42, 42, 0.8);
+  color: #fff;
+  border: 2px solid rgba(255, 255, 255, .3);
+  padding: 14px 28px;
+  border-radius: 12px;
+  cursor: pointer;
+  font-weight: 700;
+  font-size: 15px;
+  transition: all 0.2s ease;
+  position: relative;
+  overflow: hidden;
+}
+
+.chapter-complete-dialog .btn.primary {
+  background: linear-gradient(135deg, #00e0ff, #0099cc);
+  color: #000;
+  border-color: #00e0ff;
+  box-shadow: 0 4px 15px rgba(0, 224, 255, 0.3);
+}
+
+.chapter-complete-dialog .btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
+}
+
+.chapter-complete-dialog .btn.alt:hover {
+  background: rgba(60, 60, 60, 0.9);
+  border-color: rgba(255, 255, 255, .5);
+}
+
+.chapter-complete-dialog .btn.primary:hover {
+  background: linear-gradient(135deg, #00f0ff, #00aae0);
+  box-shadow: 0 6px 25px rgba(0, 224, 255, 0.5);
+  transform: translateY(-2px) scale(1.02);
+}
+
+/* ============================================
+   STARTUP SCREEN
+   ============================================ */
+.startup {
+  position: fixed;
+  inset: 0;
+  display: none;
+  place-items: center;
+  background: rgba(0, 0, 0, .7);
+  backdrop-filter: blur(2px);
+  z-index: 9999;
+}
+
+.startup .panel {
+  background: #0f1216;
+  border: 1px solid rgba(255, 255, 255, .15);
+  border-radius: 16px;
+  padding: 20px;
+  width: min(520px, 92vw);
+  box-shadow: 0 20px 60px rgba(0, 0, 0, .6);
+}
+
+.startup h1 {
+  margin: 0 0 8px 0;
+  font-size: 18px;
+  letter-spacing: .2px;
+}
+
+.startup p {
+  margin: 0 0 14px 0;
+  color: #cfd7e3;
+  font-size: 14px;
+}
+
+.startup .actions {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.startup .actions .btn {
+  background: #2a2a2a;
+  color: #fff;
+  border: 1px solid rgba(255, 255, 255, .2);
+  padding: 10px 14px;
+  border-radius: 10px;
+  cursor: pointer;
+  font-weight: 600;
+}
+
+.startup .hint {
+  font-size: 12px;
+  opacity: .85;
+  margin-top: 10px;
+  color: #99a3b3;
+}
+
+.startup .drop {
+  margin-top: 12px;
+  padding: 14px;
+  border: 1px dashed rgba(255, 255, 255, .25);
+  border-radius: 12px;
+  text-align: center;
+  color: #cfd7e3;
+  font-size: 13px;
+}
+
+.startup .drop.dragover {
+  background: rgba(255, 255, 255, .06);
+}
+
+.file-upload-box {
+  padding: 12px;
+  background: rgba(255, 255, 255, .03);
+  border: 1px solid rgba(255, 255, 255, .1);
+  border-radius: 8px;
+}
+
+.file-label {
+  font-size: 13px;
+  font-weight: 600;
+  margin-bottom: 8px;
+  color: #00e0ff;
+}
+
+.file-status {
+  font-size: 12px;
+  margin-top: 6px;
+  color: #99a3b3;
+  font-style: italic;
+}
+
+.file-status.success {
+  color: #22c55e;
+}
+
+input[type="file"] {
+  display: none;
+}
+
+/* ============================================
+   SCROLLBAR STYLING (Dark Theme)
+   ============================================ */
+.viewer::-webkit-scrollbar {
+  width: 10px;
+}
+
+.viewer::-webkit-scrollbar-track {
+  background: #1a1a1a;
+  border-radius: 5px;
+}
+
+.viewer::-webkit-scrollbar-thumb {
+  background: #404040;
+  border-radius: 5px;
+  border: 2px solid #1a1a1a;
+}
+
+.viewer::-webkit-scrollbar-thumb:hover {
+  background: #555;
+}
+
+/* Firefox scrollbar */
+.viewer {
+  scrollbar-width: thin;
+  scrollbar-color: #404040 #1a1a1a;
+}
+
+/* HIDE SCROLLBAR for narration-only content */
+.subs-only::-webkit-scrollbar {
+  display: none;
+
+/* ============================================
+   RESPONSIVE - ASPECT RATIO BASED
+   Portrait layout for ANY device where height > width * 1.2
+   ============================================ */
+
+/* Portrait orientation - SIDEBAR AT BOTTOM HALF */
+/* If height is 20% larger than width: aspect-ratio < 1/1.2 = 5/6 */
+@media (max-aspect-ratio: 5/6) {
+  .frame {
+    grid-template-columns: 1fr;
+    grid-template-rows: auto 1fr 1fr;
+    height: 100vh;
+    min-height: 100vh;
+    max-height: 100vh;
+  }
+  
+  .titlebar {
+    grid-column: 1;
+    grid-row: 1;
+    padding: 10px 16px;
+    font-size: 13px;
+  }
+  
+  .stage {
+    grid-column: 1;
+    grid-row: 2;
+    aspect-ratio: 6000 / 4000;
+    background-size: contain;
+    background-position: center;
+    background-repeat: no-repeat;
+    align-self: center;
+    justify-self: center;
+    width: 100%;
+    height: auto;
+    max-height: 100%;
+  }
+  
+  .hotspot.circle {
+    aspect-ratio: 1 / 1;
+  }
+  
+  .hotspot::before {
+    width: 18px;
+    height: 18px;
+    font-size: 10px;
+  }
+  
+  .hotspot.done::after {
+    width: 18px;
+    height: 18px;
+    font-size: 10px;
+  }
+  
+  .sidebar {
+    grid-column: 1;
+    grid-row: 3;
+    border-right: none;
+    border-top: 2px solid rgba(0, 224, 255, .3);
+    background: linear-gradient(180deg, #0a0a0f 0%, #060609 100%);
+    height: 100%;
+    overflow-y: auto;
+    display: block;
+    position: relative;
+  }
+  
+  .sidebar::before {
+    content: '';
+    position: sticky;
+    top: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 60px;
+    height: 4px;
+    background: rgba(255, 255, 255, .3);
+    border-radius: 2px;
+    display: block;
+    margin: 8px auto;
+    z-index: 11;
+  }
+  
+  .sidebar-header {
+    position: sticky;
+    top: 0;
+    z-index: 10;
+    background: linear-gradient(180deg, rgba(0, 224, 255, .12), rgba(0, 224, 255, .06));
+    backdrop-filter: blur(8px);
+    padding: 14px 12px;
+    padding-top: 20px;
+    font-size: 13px;
+    border-bottom: 2px solid rgba(0, 224, 255, .3);
+    text-align: center;
+    letter-spacing: 0.5px;
+  }
+  
+  .module-header {
+    padding: 12px 12px;
+    font-size: 12px;
+  }
+  
+  .chapter-header {
+    padding: 10px 10px 10px 20px;
+    font-size: 11px;
+  }
+  
+  .segment-item {
+    padding: 8px 10px 8px 32px;
+    font-size: 10px;
+  }
+  
+  .module-expand-icon,
+  .chapter-expand-icon {
+    width: 16px;
+    height: 16px;
+    font-size: 11px;
+  }
+  
+  .segment-badge {
+    width: 18px;
+    height: 18px;
+    font-size: 9px;
+  }
+  
+  .hotspot {
+    font-size: 11px;
+  }
+  
+  .hotspot.pill {
+    font-size: 13px;
+    padding: 8px 14px;
+    padding-left: 20px;
+  }
+  
+  .hotspot.pill::before {
+    top: -10px;
+    left: -10px;
+    width: 22px;
+    height: 22px;
+    font-size: 13px;
+  }
+  
+  .inner-window {
+    max-width: 95% !important;
+    max-height: 80% !important;
+    width: 95% !important;
+    height: auto !important;
+    top: 50% !important;
+    left: 50% !important;
+    transform: translate(-50%, -50%) !important;
+  }
+  
+  .inner-window header {
+    padding: 10px 12px;
+    font-size: 13px;
+  }
+  
+  .viewer {
+    max-height: 60vh;
+  }
+  
+  #closeViewer {
+    padding: 6px 12px;
+    font-size: 20px;
+  }
+  
+  #toggleProgressBtn {
+    top: 50px;
+    right: 10px;
+    padding: 8px 14px;
+    font-size: 11px;
+  }
+  
+  #progressPanel {
+    top: 50px;
+    right: 10px;
+    width: calc(100vw - 40px);
+    max-width: 380px;
+    max-height: 40vh;
+  }
+}
+
+/* Landscape - adjust viewer for horizontal screens */
+@media (min-aspect-ratio: 5/6) and (orientation: landscape) {
+  .inner-window {
+    max-width: 85% !important;
+    max-height: 75% !important;
+    width: 85% !important;
+  }
+  
+  .viewer {
+    max-height: 50vh;
+  }
+}

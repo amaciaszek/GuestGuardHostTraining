@@ -1,0 +1,134 @@
+{
+  "id": "facility_planning_utilities",
+  "title": "Facility Planning - Utilities",
+  "audioFile": "Assets/Module 2/Chapter 1/Audio/2.1 Facility Planning_Utilities.wav",
+  "transcriptFile": "Assets/Module 2/Chapter 1/Info/2_1.txt",
+  "backgroundImage": "Assets/Module 2/Chapter 1/Background/2_1.jpg",
+  "canvasDimensions": {
+    "width": 6000,
+    "height": 4000
+  },
+  "hotspots": [
+    {
+      "id": "b1",
+      "tcStart": "00;00;00;00",
+      "tcEnd": "00;00;15;15",
+      "realLifeExamples": [],
+      "type": "pill",
+      "label": "Start",
+      "dock": "left",
+      "order": "first",
+      "text": "[Intro]"
+    },
+    {
+      "id": "b2",
+      "tcStart": "00;00;15;15",
+      "tcEnd": "00;00;37;28",
+      "realLifeExamples": [],
+      "type": "circle",
+      "centerX": 960,
+      "centerY": 2764,
+      "width": 940,
+      "height": 940,
+      "text": "[What Utilities Are & Why They Matter]",
+      "contentMedia": {
+        "type": "video",
+        "src": "Assets/Module 2/Chapter 1/Segment 1/Utilities Overview Video (HD).mp4"
+      }
+    },
+    {
+      "id": "b3",
+      "tcStart": "00;00;37;28",
+      "tcEnd": "00;01;03;04",
+      "realLifeExamples": [],
+      "type": "circle",
+      "centerX": 847,
+      "centerY": 1515,
+      "width": 940,
+      "height": 940,
+      "text": "[Alternative Heating Sources]",
+      "contentMedia": {
+        "type": "video",
+        "src": "Assets/Module 2/Chapter 1/Segment 2/Alternative Heating Sources.mov"
+      }
+    },
+    {
+      "id": "b4",
+      "tcStart": "00;01;03;04",
+      "tcEnd": "00;01;24;23",
+      "realLifeExamples": [
+        "Assets/Module 2/Chapter 1/Segment 3/Examples/2.1 Common Area AC Unit, Extinguisher, Clean.jpg"
+      ],
+      "type": "circle",
+      "centerX": 1952,
+      "centerY": 683,
+      "width": 940,
+      "height": 940,
+      "text": "[Air Conditioning Units]",
+      "contentMedia": {
+        "type": "video",
+        "src": "Assets/Module 2/Chapter 1/Segment 3/HVAC video (shutterstock).mov"
+      }
+    },
+    {
+      "id": "b5",
+      "tcStart": "00;01;24;23",
+      "tcEnd": "00;01;39;18",
+      "realLifeExamples": [
+        "Assets/Module 2/Chapter 1/Segment 4/Examples/2.1 Water Cooler.jpg"
+      ],
+      "type": "circle",
+      "centerX": 4049,
+      "centerY": 683,
+      "width": 940,
+      "height": 940,
+      "text": "[Water Availability]",
+      "contentMedia": {
+        "type": "video",
+        "src": "Assets/Module 2/Chapter 1/Segment 4/Facility Planning, Water Availability, Bottled Water New Video.mov"
+      }
+    },
+    {
+      "id": "b6",
+      "tcStart": "00;01;39;18",
+      "tcEnd": "00;02;07;15",
+      "realLifeExamples": [],
+      "type": "circle",
+      "centerX": 5158,
+      "centerY": 1517,
+      "width": 940,
+      "height": 940,
+      "text": "[WiFi Access & Standards]",
+      "contentMedia": {
+        "type": "video",
+        "src": "Assets/Module 2/Chapter 1/Segment 5/WiFi Access and Standards.mov"
+      }
+    },
+    {
+      "id": "b7",
+      "tcStart": "00;02;07;15",
+      "tcEnd": "00;02;38;21",
+      "realLifeExamples": [],
+      "type": "circle",
+      "centerX": 5048,
+      "centerY": 2758,
+      "width": 940,
+      "height": 940,
+      "text": "[Hypothetical Example]",
+      "contentMedia": {
+        "type": "video",
+        "src": "Assets/Module 2/Chapter 1/Segment 6/Hypothetical Example.mov"
+      }
+    },
+    {
+      "id": "b9",
+      "tcStart": "00;02;38;21",
+      "tcEnd": "00;03;00;29",
+      "realLifeExamples": [],
+      "type": "pill",
+      "text": "Done",
+      "order": "done",
+      "content": "[Closing]"
+    }
+  ]
+}

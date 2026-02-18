@@ -1,0 +1,132 @@
+{
+  "id": "fire_safety_emergency_egress",
+  "title": "Fire Safety - Emergency Egress",
+  "audioFile": "/Assets/Module 1/Chapter 2/Audio/1.2 Fire Safety_Emergency Egress.wav",
+  "transcriptFile": "/Assets/Module 1/Chapter 2/Info/1.2 Fire Safety_Emergency Egress.txt",
+  "backgroundImage": "/Assets/Module 1/Chapter 2/Background/1_2.jpg",
+  "canvasDimensions": {
+    "width": 6000,
+    "height": 4000
+  },
+  "hotspots": [
+    {
+      "id": "b1",
+      "tcStart": "00;00;00;00",
+      "tcEnd": "00;00;17;00",
+      "realLifeExamples": [],
+      "type": "pill",
+      "label": "Start",
+      "dock": "left",
+      "order": "first",
+      "text": "[Intro]"
+    },
+    {
+      "id": "b2",
+      "tcStart": "00;00;17;00",
+      "tcEnd": "00;00;38;07",
+      "realLifeExamples": [
+        "/Assets/Module 1/Chapter 2/Segment 1/Examples/1.2 House Front, Walkways.jpg",
+        "/Assets/Module 1/Chapter 2/Segment 1/Examples/1.2 Outside Walkways Unobstructed.jpg"
+      ],
+      "type": "circle",
+      "centerX": 960,
+      "centerY": 2764,
+      "width": 940,
+      "height": 940,
+      "text": "[Keeping Exit Paths Clear]",
+      "contentMedia": {
+        "type": "video",
+        "src": "/Assets/Module 1/Chapter 2/Segment 1/1.2.1 Keeping Exit Paths Clear.mp4"
+      }
+    },
+    {
+      "id": "b3",
+      "tcStart": "00;00;38;07",
+      "tcEnd": "00;00;54;14",
+      "realLifeExamples": [
+        "/Assets/Module 1/Chapter 2/Segment 2/Examples/1.2 Guest Fire Ladder, Books.jpg",
+        "/Assets/Module 1/Chapter 2/Segment 2/Examples/1.2 Guest Fire Ladder.jpg"
+      ],
+      "type": "circle",
+      "centerX": 847,
+      "centerY": 1515,
+      "width": 940,
+      "height": 940,
+      "text": "[Fire Ladders]",
+      "contentMedia": {
+        "type": "video",
+        "src": "/Assets/Module 1/Chapter 2/Segment 2/1.2.2 Fire Ladders.mov"
+      }
+    },
+    {
+      "id": "b4",
+      "tcStart": "00;00;54;14",
+      "tcEnd": "00;01;14;19",
+      "realLifeExamples": [],
+      "type": "circle",
+      "centerX": 1952,
+      "centerY": 683,
+      "width": 940,
+      "height": 940,
+      "text": "[Exit Signage]",
+      "contentMedia": {
+        "type": "video",
+        "src": "/Assets/Module 1/Chapter 2/Segment 3/1.2.3 Exit Signage.mov"
+      }
+    },
+    {
+      "id": "b5",
+      "tcStart": "00;01;14;19",
+      "tcEnd": "00;01;30;08",
+      "realLifeExamples": [],
+      "type": "circle",
+      "centerX": 4049,
+      "centerY": 683,
+      "width": 940,
+      "height": 940,
+      "text": "[Flashlights]",
+      "contentMedia": {
+        "type": "video",
+        "src": "/Assets/Module 1/Chapter 2/Segment 4/1.2.4 Flashlights.mov"
+      }
+    },
+    {
+      "id": "b6",
+      "tcStart": "00;01;30;08",
+      "tcEnd": "00;01;53;19",
+      "realLifeExamples": [],
+      "type": "circle",
+      "centerX": 5158,
+      "centerY": 1517,
+      "width": 940,
+      "height": 940,
+      "text": "[Lighting the Property]",
+      "contentMedia": {
+        "type": "video",
+        "src": "/Assets/Module 1/Chapter 2/Segment 5/1.2.5 Lighting the Property.mov"
+      }
+    },
+    {
+      "id": "b7",
+      "tcStart": "00;01;53;19",
+      "tcEnd": "00;02;24;07",
+      "realLifeExamples": [],
+      "type": "circle",
+      "centerX": 5048,
+      "centerY": 2758,
+      "width": 940,
+      "height": 940,
+      "text": "[Hypothetical Example]"
+    },
+    {
+      "id": "b9",
+      "tcStart": "00;02;24;07",
+      "tcEnd": "00;02;44;10",
+      "realLifeExamples": [],
+      "type": "pill",
+      "text": "Done",
+      "order": "done",
+      "content": "[Closing]"
+    }
+  ]
+}

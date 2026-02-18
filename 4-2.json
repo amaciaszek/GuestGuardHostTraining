@@ -1,0 +1,96 @@
+{
+  "id": "personal_safety_and_weapons_other_considerations",
+  "title": "Personal Safety - Other Considerations",
+  "audioFile": "/Assets/Module 4/Chapter 2/Audio/4.2 Personal Safety and Weapons_Other Considerations.wav",
+  "transcriptFile": "/Assets/Module 4/Chapter 2/Info/4.2 Personal Safety and Weapons_Other Considerations.txt",
+  "backgroundImage": "/Assets/Module 4/Chapter 2/Background/4_2.jpg",
+  "canvasDimensions": {
+    "width": 6000,
+    "height": 4000
+  },
+  "hotspots": [
+    {
+      "id": "b1",
+      "tcStart": "00;00;00;00",
+      "tcEnd": "00;00;15;00",
+      "realLifeExamples": [],
+      "type": "pill",
+      "label": "Start",
+      "dock": "left",
+      "order": "first",
+      "text": "[Intro]"
+    },
+    {
+      "id": "b2",
+      "tcStart": "00;00;15;00",
+      "tcEnd": "00;00;28;26",
+      "realLifeExamples": [],
+      "type": "circle",
+      "centerX": 754,
+      "centerY": 2365,
+      "width": 940,
+      "height": 940,
+      "text": "[Privacy & Facilities]",
+      "contentMedia": {
+        "type": "video",
+        "src": "/Assets/Module 4/Chapter 2/Segment 1/4.2.1 Privacy & Facilities.mp4"
+      }
+    },
+    {
+      "id": "b3",
+      "tcStart": "00;00;28;26",
+      "tcEnd": "00;01;01;11",
+      "realLifeExamples": [
+        "/Assets/Module 4/Chapter 2/Segment 2/Examples/4.2 Common Area Microwave, Accoutrements II.jpg"
+      ],
+      "type": "circle",
+      "centerX": 1558,
+      "centerY": 1129,
+      "width": 940,
+      "height": 940,
+      "text": "[Common Areas]",
+      "contentMedia": {
+        "type": "video",
+        "src": "/Assets/Module 4/Chapter 2/Segment 2/4.2.2 Hypothetical Example.mov"
+      }
+    },
+    {
+      "id": "b4",
+      "tcStart": "00;01;01;11",
+      "tcEnd": "00;01;32;08",
+      "realLifeExamples": [],
+      "type": "circle",
+      "centerX": 4457,
+      "centerY": 1129,
+      "width": 940,
+      "height": 940,
+      "text": "[Hypothetical Example]"
+    },
+    {
+      "id": "b5",
+      "tcStart": "00;01;32;08",
+      "tcEnd": "00;01;59;04",
+      "realLifeExamples": [],
+      "type": "circle",
+      "centerX": 5239,
+      "centerY": 2362,
+      "width": 940,
+      "height": 940,
+      "text": "[Party Rules]",
+      "contentMedia": {
+        "type": "video",
+        "src": "/Assets/Module 4/Chapter 2/Segment 3/4.2.3 Party Rules.mov"
+      }
+    },
+    {
+      "id": "b9",
+      "tcStart": "00;01;59;04",
+      "tcEnd": "00;02;20;09",
+      "realLifeExamples": [],
+      "type": "pill",
+      "text": "Done",
+      "order": "done",
+      "content": "[Closing]"
+    }
+  ]
+}

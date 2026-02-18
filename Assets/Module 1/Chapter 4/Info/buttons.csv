@@ -1,0 +1,9 @@
+﻿Button,Time Start,Time End,Button X,Button Y,Text
+Intro,00;00;00;00,00;00;12;26,NULL,NULL,Intro
+Segment 1,00;00;12;26,00;00;35;20,960,2764,What They Look Like & Where to Place Them
+Segment 2,00;00;35;20,00;01;21;09,847,1515,Local vs. Interconnected Systems
+Segment 3,00;01;21;09,00;01;37;15,1952,683,Common Brands
+Segment 4,00;01;37;15,00;01;58;10,4049,683,Testing & Monitoring Requirements
+Segment 5,00;01;58;10,00;02;11;04,5158,1517,Showing Detectors to Inspectors
+Segment 6,00;02;11;04,00;02;39;07,5048,2758,Hypothetical Example
+Closing,00;02;39;07,00;03;01;14,NULL,NULL,Closing

@@ -1,0 +1,409 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <title>iOS Auth Test Page</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      min-height: 100vh;
+      padding: 20px;
+      color: #fff;
+    }
+    .container {
+      max-width: 600px;
+      margin: 0 auto;
+      background: rgba(255,255,255,0.1);
+      backdrop-filter: blur(10px);
+      border-radius: 20px;
+      padding: 30px;
+      box-shadow: 0 8px 32px rgba(0,0,0,0.3);
+    }
+    h1 {
+      font-size: 24px;
+      margin-bottom: 20px;
+      text-align: center;
+    }
+    .test-section {
+      background: rgba(255,255,255,0.05);
+      border-radius: 12px;
+      padding: 20px;
+      margin-bottom: 20px;
+      border: 1px solid rgba(255,255,255,0.1);
+    }
+    .test-section h2 {
+      font-size: 16px;
+      margin-bottom: 12px;
+      color: #ffd;
+    }
+    .status {
+      padding: 10px 15px;
+      border-radius: 8px;
+      margin-bottom: 10px;
+      font-weight: 600;
+      font-size: 14px;
+    }
+    .status.pending {
+      background: rgba(255,193,7,0.2);
+      border: 1px solid rgba(255,193,7,0.5);
+      color: #ffc107;
+    }
+    .status.pass {
+      background: rgba(76,175,80,0.2);
+      border: 1px solid rgba(76,175,80,0.5);
+      color: #4caf50;
+    }
+    .status.fail {
+      background: rgba(244,67,54,0.2);
+      border: 1px solid rgba(244,67,54,0.5);
+      color: #f44336;
+    }
+    input {
+      width: 100%;
+      padding: 12px;
+      border-radius: 8px;
+      border: 1px solid rgba(255,255,255,0.2);
+      background: rgba(255,255,255,0.1);
+      color: #fff;
+      font-size: 14px;
+      margin-bottom: 12px;
+    }
+    input::placeholder {
+      color: rgba(255,255,255,0.5);
+    }
+    button {
+      width: 100%;
+      padding: 14px;
+      border-radius: 8px;
+      border: none;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: #fff;
+      font-weight: 700;
+      font-size: 15px;
+      cursor: pointer;
+      transition: transform 0.2s, box-shadow 0.2s;
+      margin-bottom: 10px;
+    }
+    button:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+    }
+    button:active {
+      transform: translateY(0);
+    }
+    button:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+    .info {
+      font-size: 12px;
+      color: rgba(255,255,255,0.7);
+      line-height: 1.5;
+    }
+    .code {
+      background: rgba(0,0,0,0.3);
+      padding: 10px;
+      border-radius: 6px;
+      font-family: 'Courier New', monospace;
+      font-size: 11px;
+      margin: 10px 0;
+      overflow-x: auto;
+      white-space: pre;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>🧪 iOS Authentication Test</h1>
+    
+    <div class="test-section">
+      <h2>📱 Device Detection</h2>
+      <div id="deviceInfo" class="info">Detecting...</div>
+    </div>
+    
+    <div class="test-section">
+      <h2>💾 Storage Tests</h2>
+      <div id="localStorageStatus" class="status pending">LocalStorage: Testing...</div>
+      <div id="sessionStorageStatus" class="status pending">SessionStorage: Testing...</div>
+      <div id="cookieStatus" class="status pending">Cookies: Testing...</div>
+    </div>
+    
+    <div class="test-section">
+      <h2>🌐 Network Test</h2>
+      <div id="networkStatus" class="status pending">Network: Testing...</div>
+      <button id="testNetworkBtn">Test API Connection</button>
+    </div>
+    
+    <div class="test-section">
+      <h2>🔐 Authentication Test</h2>
+      <input 
+        type="text" 
+        id="tempTokenInput" 
+        placeholder="Paste temp_token here..."
+      />
+      <button id="testAuthBtn">Test Authentication</button>
+      <div id="authStatus" class="status pending">Not tested yet</div>
+      <div id="authDetails" class="code" style="display:none;"></div>
+    </div>
+    
+    <div class="test-section">
+      <h2>📊 Test Results</h2>
+      <div id="results" class="info">Run tests to see results...</div>
+    </div>
+  </div>
+  
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script>
+    // Test configuration
+    const API_BASE = 'https://guestguard-platform.vercel.app';
+    const SUPABASE_URL = 'https://uwbwaujbvqctmcpgqhds.supabase.co';
+    const SUPABASE_ANON = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InV3YndhVWpiVnFjdG1jcGdxaGRzIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDkzNjU2NDksImV4cCI6MjA2NDk0MTY0OX0.sb_publishable_4thWdEYtuLNTZ0R0F9Bw1w_tzYEyH9R';
+    
+    const results = {
+      device: {},
+      storage: {},
+      network: false,
+      auth: null
+    };
+    
+    // Device detection
+    function detectDevice() {
+      const ua = navigator.userAgent;
+      const info = {
+        isIOS: /iPad|iPhone|iPod/.test(ua),
+        isSafari: /Safari/.test(ua) && !/Chrome/.test(ua),
+        platform: navigator.platform,
+        vendor: navigator.vendor,
+        cookieEnabled: navigator.cookieEnabled,
+        onLine: navigator.onLine,
+        language: navigator.language,
+        screen: `${screen.width}x${screen.height}`,
+        viewport: `${window.innerWidth}x${window.innerHeight}`,
+        userAgent: ua
+      };
+      
+      results.device = info;
+      
+      const deviceDiv = document.getElementById('deviceInfo');
+      deviceDiv.innerHTML = `
+        <strong>Platform:</strong> ${info.platform}<br>
+        <strong>iOS:</strong> ${info.isIOS ? '✅ Yes' : '❌ No'}<br>
+        <strong>Safari:</strong> ${info.isSafari ? '✅ Yes' : '❌ No'}<br>
+        <strong>Online:</strong> ${info.onLine ? '✅ Yes' : '❌ No'}<br>
+        <strong>Cookies:</strong> ${info.cookieEnabled ? '✅ Enabled' : '❌ Disabled'}<br>
+        <strong>Screen:</strong> ${info.screen}<br>
+        <strong>Viewport:</strong> ${info.viewport}
+      `;
+    }
+    
+    // Storage tests
+    async function testStorage() {
+      // LocalStorage
+      try {
+        localStorage.setItem('test', 'test');
+        localStorage.removeItem('test');
+        document.getElementById('localStorageStatus').className = 'status pass';
+        document.getElementById('localStorageStatus').textContent = '✅ LocalStorage: Working';
+        results.storage.localStorage = true;
+      } catch (e) {
+        document.getElementById('localStorageStatus').className = 'status fail';
+        document.getElementById('localStorageStatus').textContent = `❌ LocalStorage: ${e.message}`;
+        results.storage.localStorage = false;
+        results.storage.localStorageError = e.message;
+      }
+      
+      // SessionStorage
+      try {
+        sessionStorage.setItem('test', 'test');
+        sessionStorage.removeItem('test');
+        document.getElementById('sessionStorageStatus').className = 'status pass';
+        document.getElementById('sessionStorageStatus').textContent = '✅ SessionStorage: Working';
+        results.storage.sessionStorage = true;
+      } catch (e) {
+        document.getElementById('sessionStorageStatus').className = 'status fail';
+        document.getElementById('sessionStorageStatus').textContent = `❌ SessionStorage: ${e.message}`;
+        results.storage.sessionStorage = false;
+        results.storage.sessionStorageError = e.message;
+      }
+      
+      // Cookie test
+      try {
+        document.cookie = 'test=test; path=/';
+        const cookieWorks = document.cookie.includes('test=test');
+        if (cookieWorks) {
+          document.getElementById('cookieStatus').className = 'status pass';
+          document.getElementById('cookieStatus').textContent = '✅ Cookies: Working';
+          results.storage.cookies = true;
+        } else {
+          throw new Error('Could not write cookie');
+        }
+      } catch (e) {
+        document.getElementById('cookieStatus').className = 'status fail';
+        document.getElementById('cookieStatus').textContent = `❌ Cookies: ${e.message}`;
+        results.storage.cookies = false;
+        results.storage.cookiesError = e.message;
+      }
+    }
+    
+    // Network test
+    async function testNetwork() {
+      const status = document.getElementById('networkStatus');
+      status.className = 'status pending';
+      status.textContent = 'Testing API connection...';
+      
+      try {
+        const response = await fetch(`${API_BASE}/api/health`);
+        const data = await response.json();
+        
+        status.className = 'status pass';
+        status.textContent = `✅ Network: Connected (${response.status})`;
+        results.network = true;
+        results.networkResponse = data;
+      } catch (e) {
+        status.className = 'status fail';
+        status.textContent = `❌ Network: ${e.message}`;
+        results.network = false;
+        results.networkError = e.message;
+      }
+    }
+    
+    // Authentication test
+    async function testAuth() {
+      const tempToken = document.getElementById('tempTokenInput').value.trim();
+      const status = document.getElementById('authStatus');
+      const details = document.getElementById('authDetails');
+      const btn = document.getElementById('testAuthBtn');
+      
+      if (!tempToken) {
+        status.className = 'status fail';
+        status.textContent = '❌ Please enter a temp token';
+        return;
+      }
+      
+      btn.disabled = true;
+      status.className = 'status pending';
+      status.textContent = 'Testing authentication...';
+      details.style.display = 'none';
+      
+      try {
+        // Step 1: Exchange temp token
+        const exchangeResponse = await fetch(`${API_BASE}/api/auth/exchange-temp-token`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ temp_token: tempToken })
+        });
+        
+        if (!exchangeResponse.ok) {
+          throw new Error(`Exchange failed: ${exchangeResponse.status}`);
+        }
+        
+        const sessionData = await exchangeResponse.json();
+        
+        // Step 2: Create Supabase client
+        const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON);
+        
+        // Step 3: Set session
+        const { data, error } = await supabase.auth.setSession({
+          access_token: sessionData.access_token,
+          refresh_token: sessionData.refresh_token
+        });
+        
+        if (error) throw error;
+        
+        // Step 4: Save to localStorage
+        localStorage.setItem('gg_auth', JSON.stringify({
+          access_token: sessionData.access_token,
+          refresh_token: sessionData.refresh_token,
+          expires_at: sessionData.expires_at,
+          user: data.user
+        }));
+        
+        status.className = 'status pass';
+        status.textContent = '✅ Authentication: Success!';
+        
+        details.style.display = 'block';
+        details.textContent = JSON.stringify({
+          hasUser: !!data.user,
+          userId: data.user?.id,
+          hasTokens: !!(sessionData.access_token && sessionData.refresh_token),
+          storedInLocalStorage: true
+        }, null, 2);
+        
+        results.auth = {
+          success: true,
+          user: data.user,
+          sessionData: sessionData
+        };
+        
+      } catch (e) {
+        status.className = 'status fail';
+        status.textContent = `❌ Authentication failed: ${e.message}`;
+        
+        details.style.display = 'block';
+        details.textContent = `Error: ${e.message}\n\nStack: ${e.stack}`;
+        
+        results.auth = {
+          success: false,
+          error: e.message,
+          stack: e.stack
+        };
+      } finally {
+        btn.disabled = false;
+        updateResults();
+      }
+    }
+    
+    // Update results summary
+    function updateResults() {
+      const resultsDiv = document.getElementById('results');
+      const summary = {
+        timestamp: new Date().toISOString(),
+        device: results.device,
+        storage: results.storage,
+        network: results.network,
+        auth: results.auth
+      };
+      
+      resultsDiv.innerHTML = `
+        <div class="code">${JSON.stringify(summary, null, 2)}</div>
+        <button onclick="copyResults()" style="margin-top:10px;">📋 Copy Results</button>
+      `;
+    }
+    
+    // Copy results to clipboard
+    function copyResults() {
+      const text = JSON.stringify(results, null, 2);
+      navigator.clipboard.writeText(text).then(() => {
+        alert('Results copied to clipboard!');
+      }).catch(() => {
+        // Fallback for iOS
+        const textarea = document.createElement('textarea');
+        textarea.value = text;
+        document.body.appendChild(textarea);
+        textarea.select();
+        document.execCommand('copy');
+        document.body.removeChild(textarea);
+        alert('Results copied to clipboard!');
+      });
+    }
+    
+    // Event listeners
+    document.getElementById('testNetworkBtn').addEventListener('click', testNetwork);
+    document.getElementById('testAuthBtn').addEventListener('click', testAuth);
+    
+    // Auto-detect URL parameter
+    const urlParams = new URLSearchParams(window.location.search);
+    const tempToken = urlParams.get('temp_token');
+    if (tempToken) {
+      document.getElementById('tempTokenInput').value = tempToken;
+    }
+    
+    // Run initial tests
+    detectDevice();
+    testStorage();
+  </script>
+</body>
+</html>

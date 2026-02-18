@@ -1,0 +1,82 @@
+{
+  "id": "amenities_pets_cleanliness_appliances_pets",
+  "title": " - Amenities Pets Cleanliness Appliances - Pets",
+  "audioFile": "/Assets/Module 5/Chapter 2/Audio/5.2_Amenities Pets Cleanliness Appliances_Pets.wav",
+  "transcriptFile": "/Assets/Module 5/Chapter 2/Info/5.2_Amenities Pets Cleanliness Appliances_Pets.txt",
+  "backgroundImage": "/Assets/Module 5/Chapter 2/Background/5_2.jpg",
+  "canvasDimensions": {
+    "width": 6000,
+    "height": 4000
+  },
+  "hotspots": [
+    {
+      "id": "b1",
+      "tcStart": "00;00;00;00",
+      "tcEnd": "00;00;23;25",
+      "realLifeExamples": [],
+      "type": "pill",
+      "label": "Start",
+      "dock": "left",
+      "order": "first",
+      "text": "[Intro]"
+    },
+    {
+      "id": "b2",
+      "tcStart": "00;00;23;25",
+      "tcEnd": "00;00;42;27",
+      "realLifeExamples": [],
+      "type": "circle",
+      "centerX": 895,
+      "centerY": 1987,
+      "width": 940,
+      "height": 940,
+      "text": "[Benefits of Allowing Pets]",
+      "contentMedia": {
+        "type": "video",
+        "src": "/Assets/Module 5/Chapter 2/Segment 1/5.2.1 Benefits of Allowing Pets.mov"
+      }
+    },
+    {
+      "id": "b3",
+      "tcStart": "00;00;42;27",
+      "tcEnd": "00;01;13;05",
+      "realLifeExamples": [],
+      "type": "circle",
+      "centerX": 4220,
+      "centerY": 663,
+      "width": 940,
+      "height": 940,
+      "text": "[What to Communicate]",
+      "contentMedia": {
+        "type": "video",
+        "src": "/Assets/Module 5/Chapter 2/Segment 2/5.2.2 What to Communicate.mov"
+      }
+    },
+    {
+      "id": "b4",
+      "tcStart": "00;01;13;05",
+      "tcEnd": "00;01;36;28",
+      "realLifeExamples": [],
+      "type": "circle",
+      "centerX": 5129,
+      "centerY": 2627,
+      "width": 940,
+      "height": 940,
+      "text": "[Hypothetical Example]",
+      "contentMedia": {
+        "type": "video",
+        "src": "/Assets/Module 5/Chapter 2/Segment 3/5.2.3 Hypothetical Example.mov"
+      }
+    },
+    {
+      "id": "b9",
+      "tcStart": "00;01;36;28",
+      "tcEnd": "00;01;52;14",
+      "realLifeExamples": [],
+      "type": "pill",
+      "text": "Done",
+      "order": "done",
+      "content": "[Closing]"
+    }
+  ]
+}

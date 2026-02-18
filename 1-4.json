@@ -1,0 +1,125 @@
+{
+  "id": "fire_safety_alarm_systems",
+  "title": "Fire Safety - Alarm Systems",
+  "audioFile": "/Assets/Module 1/Chapter 4/Audio/1.4 Fire Safety_Alarm Systems.wav",
+  "transcriptFile": "/Assets/Module 1/Chapter 4/Info/1.4 Fire Safety_Alarm Systems.txt",
+  "backgroundImage": "/Assets/Module 1/Chapter 4/Background/1_4.jpg",
+  "canvasDimensions": {
+    "width": 6000,
+    "height": 4000
+  },
+  "hotspots": [
+    {
+      "id": "b1",
+      "tcStart": "00;00;00;00",
+      "tcEnd": "00;00;12;26",
+      "realLifeExamples": [],
+      "type": "pill",
+      "label": "Start",
+      "dock": "left",
+      "order": "first",
+      "text": "[Intro]"
+    },
+    {
+      "id": "b2",
+      "tcStart": "00;00;12;26",
+      "tcEnd": "00;00;35;20",
+      "realLifeExamples": [],
+      "type": "circle",
+      "centerX": 960,
+      "centerY": 2764,
+      "width": 940,
+      "height": 940,
+      "text": "[What They Look Like & Where to Place Them]",
+      "contentMedia": {
+        "type": "video",
+        "src": "/Assets/Module 1/Chapter 4/Segment 1/1.4.1 What They Look Like & Where to Place Them.mov"
+      }
+    },
+    {
+      "id": "b3",
+      "tcStart": "00;00;35;20",
+      "tcEnd": "00;01;21;09",
+      "realLifeExamples": [],
+      "type": "circle",
+      "centerX": 847,
+      "centerY": 1515,
+      "width": 940,
+      "height": 940,
+      "text": "[Local vs. Interconnected Systems]",
+      "contentMedia": {
+        "type": "video",
+        "src": [
+          "/Assets/Module 1/Chapter 4/Segment 2/1.4.2.A Local vs. Interconnected Systems.mov",
+          "/Assets/Module 1/Chapter 4/Segment 2/1.4.2.B Local vs. Interconnected Systems.mov"
+        ]
+      }
+    },
+    {
+      "id": "b4",
+      "tcStart": "00;01;21;09",
+      "tcEnd": "00;01;37;15",
+      "realLifeExamples": [],
+      "type": "circle",
+      "centerX": 1952,
+      "centerY": 683,
+      "width": 940,
+      "height": 940,
+      "text": "[Common Brands]"
+    },
+    {
+      "id": "b5",
+      "tcStart": "00;01;37;15",
+      "tcEnd": "00;01;58;10",
+      "realLifeExamples": [],
+      "type": "circle",
+      "centerX": 4049,
+      "centerY": 683,
+      "width": 940,
+      "height": 940,
+      "text": "[Testing & Monitoring Requirements]",
+      "contentMedia": {
+        "type": "video",
+        "src": "/Assets/Module 1/Chapter 4/Segment 4/1.4.4 Testing & Monitoring Requirements.mov"
+      }
+    },
+    {
+      "id": "b6",
+      "tcStart": "00;01;58;10",
+      "tcEnd": "00;02;11;04",
+      "realLifeExamples": [],
+      "type": "circle",
+      "centerX": 5158,
+      "centerY": 1517,
+      "width": 940,
+      "height": 940,
+      "text": "[Showing Detectors to Inspectors]",
+      "contentMedia": {
+        "type": "video",
+        "src": "/Assets/Module 1/Chapter 4/Segment 5/1.4.5 Showing Detectors to Inspectors.mov"
+      }
+    },
+    {
+      "id": "b7",
+      "tcStart": "00;02;11;04",
+      "tcEnd": "00;02;39;07",
+      "realLifeExamples": [],
+      "type": "circle",
+      "centerX": 5048,
+      "centerY": 2758,
+      "width": 940,
+      "height": 940,
+      "text": "[Hypothetical Example]"
+    },
+    {
+      "id": "b9",
+      "tcStart": "00;02;39;07",
+      "tcEnd": "00;03;01;14",
+      "realLifeExamples": [],
+      "type": "pill",
+      "text": "Done",
+      "order": "done",
+      "content": "[Closing]"
+    }
+  ]
+}

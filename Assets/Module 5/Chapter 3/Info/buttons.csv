@@ -1,0 +1,6 @@
+﻿Button,Time Start,Time End,Button X,Button Y,Text
+Intro,00;00;00;00,00;00;10;24,NULL,NULL,Intro
+Segment 1,00;00;10;24,00;00;39;22,895,1987,Key Appliances in a Property
+Segment 2,00;00;39;22,00;01;03;18,4220,663,Furnace and Boiler Systems
+Segment 3,00;01;03;18,00;01;38;17,5129,2627,Safety & Utilities Reminder
+Closing,00;01;38;17,00;01;54;04,NULL,NULL,Closing

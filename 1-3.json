@@ -1,0 +1,99 @@
+{
+  "id": "fire_safety_fire_extinguishers",
+  "title": "Fire Safety - Fire Extinguishers",
+  "audioFile": "/Assets/Module 1/Chapter 3/Audio/1.3 Fire Safety_Fire Extinguishers.wav",
+  "transcriptFile": "/Assets/Module 1/Chapter 3/Info/1.3 Fire Safety_Fire Extinguishers.txt",
+  "backgroundImage": "/Assets/Module 1/Chapter 3/Background/1_3.jpg",
+  "canvasDimensions": {
+    "width": 6000,
+    "height": 4000
+  },
+  "hotspots": [
+    {
+      "id": "b1",
+      "tcStart": "00;00;00;00",
+      "tcEnd": "00;00;11;06",
+      "realLifeExamples": [],
+      "type": "pill",
+      "label": "Start",
+      "dock": "left",
+      "order": "first",
+      "text": "[Intro]"
+    },
+    {
+      "id": "b2",
+      "tcStart": "00;00;11;06",
+      "tcEnd": "00;00;42;18",
+      "realLifeExamples": [
+        "/Assets/Module 1/Chapter 3/Segment 1/Examples/1.3 Common Area AC Unit, Extinguisher, Clean.jpg",
+        "/Assets/Module 1/Chapter 3/Segment 1/Examples/1.3 Fire Extinguisher (Common Area).jpg",
+        "/Assets/Module 1/Chapter 3/Segment 1/Examples/1.3 Fire Extinguisher (Guest Room I).jpg",
+        "/Assets/Module 1/Chapter 3/Segment 1/Examples/1.3 Fire Extinguisher (Guest Room II).jpg"
+      ],
+      "type": "circle",
+      "centerX": 754,
+      "centerY": 2365,
+      "width": 940,
+      "height": 940,
+      "text": "[Accessibility & Placement]",
+      "contentMedia": {
+        "type": "video",
+        "src": ["/Assets/Module 1/Chapter 3/Segment 1/1.3.1 Accessibility & Placement.mov","/Assets/Module 1/Chapter 3/Segment 1/Fire Extinguisher Accessibility & Placement Video 2.mov"]
+      }
+    },
+    {
+      "id": "b3",
+      "tcStart": "00;00;42;18",
+      "tcEnd": "00;01;23;15",
+      "realLifeExamples": [],
+      "type": "circle",
+      "centerX": 1558,
+      "centerY": 1129,
+      "width": 940,
+      "height": 940,
+      "text": "[Compliance, Tagging & Condition]",
+      "contentMedia": {
+        "type": "video",
+        "src": ["/Assets/Module 1/Chapter 3/Segment 2/1.3.2 Compliance, Tagging & Condition.mov","/Assets/Module 1/Chapter 3/Segment 2/Fire Extinguisher Compliance Tagging Condition Video 2.mov"]
+      }
+    },
+    {
+      "id": "b4",
+      "tcStart": "00;01;23;15",
+      "tcEnd": "00;01;50;23",
+      "realLifeExamples": [],
+      "type": "circle",
+      "centerX": 4457,
+      "centerY": 1129,
+      "width": 940,
+      "height": 940,
+      "text": "[Types of Extinguishers]",
+      "contentMedia": {
+        "type": "video",
+        "src": "/Assets/Module 1/Chapter 3/Segment 3/1.3.3 Types of Extinguishers.mp4"
+      }
+    },
+    {
+      "id": "b5",
+      "tcStart": "00;01;50;23",
+      "tcEnd": "00;02;20;04",
+      "realLifeExamples": [],
+      "type": "circle",
+      "centerX": 5239,
+      "centerY": 2362,
+      "width": 940,
+      "height": 940,
+      "text": "[Hypothetical Example]"
+    },
+    {
+      "id": "b9",
+      "tcStart": "00;02;20;04",
+      "tcEnd": "00;02;41;26",
+      "realLifeExamples": [],
+      "type": "pill",
+      "text": "Done",
+      "order": "done",
+      "content": "[Closing]"
+    }
+  ]
+}

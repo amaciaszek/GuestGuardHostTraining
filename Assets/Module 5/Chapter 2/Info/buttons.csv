@@ -1,0 +1,6 @@
+﻿Button,Time Start,Time End,Button X,Button Y,Text
+Intro,00;00;00;00,00;00;23;25,NULL,NULL,Intro
+Segment 1,00;00;23;25,00;00;42;27,895,1987,Benefits of Allowing Pets
+Segment 2,00;00;42;27,00;01;13;05,4220,663,What to Communicate
+Segment 3,00;01;13;05,00;01;36;28,5129,2627,Hypothetical Example
+Closing,00;01;36;28,00;01;52;14,NULL,NULL,Closing

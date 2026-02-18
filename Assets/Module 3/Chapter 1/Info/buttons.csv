@@ -1,0 +1,6 @@
+﻿Button,Time Start,Time End,Button X,Button Y,Text
+Intro,00;00;00;00,00;00;42;07,NULL,NULL,Intro
+Segment 1,00;00;42;07,00;01;27;29,895,1987,First Aid Kits
+Segment 2,00;01;27;29,00;02;03;12,4220,663,The GuestGuard First Aid Logbook
+Segment 3,00;02;03;12,00;02;34;27,5129,2627,Hypothetical Example
+Closing,00;02;34;27,00;03;00;18,NULL,NULL,Closing

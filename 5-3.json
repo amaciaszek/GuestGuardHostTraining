@@ -1,0 +1,88 @@
+{
+  "id": "amenities_pets_cleanliness_appliances_appliances",
+  "title": " - Amenities Pets Cleanliness Appliances - Appliances",
+  "audioFile": "/Assets/Module 5/Chapter 3/Audio/5.3_Amenities Pets Cleanliness Appliances_Appliances.wav",
+  "transcriptFile": "/Assets/Module 5/Chapter 3/Info/5.3_Amenities Pets Cleanliness Appliances_Appliances.txt",
+  "backgroundImage": "/Assets/Module 5/Chapter 3/Background/5_3.jpg",
+  "canvasDimensions": {
+    "width": 6000,
+    "height": 4000
+  },
+  "hotspots": [
+    {
+      "id": "b1",
+      "tcStart": "00;00;00;00",
+      "tcEnd": "00;00;10;24",
+      "realLifeExamples": [],
+      "type": "pill",
+      "label": "Start",
+      "dock": "left",
+      "order": "first",
+      "text": "[Intro]"
+    },
+    {
+      "id": "b2",
+      "tcStart": "00;00;10;24",
+      "tcEnd": "00;00;39;22",
+      "realLifeExamples": [
+        "/Assets/Module 5/Chapter 3/Segment 1/Examples/5.3 Common Area Microwave, Accoutrements.jpg",
+        "/Assets/Module 5/Chapter 3/Segment 1/Examples/5.3 Guest AC Unit, Fridge.jpg",
+        "/Assets/Module 5/Chapter 3/Segment 1/Examples/5.3 Guest Fridge.jpg",
+        "/Assets/Module 5/Chapter 3/Segment 1/Examples/5.3 Guest Microwave.jpg",
+        "/Assets/Module 5/Chapter 3/Segment 1/Examples/5.3 Guest Shower.jpg"
+      ],
+      "type": "circle",
+      "centerX": 895,
+      "centerY": 1987,
+      "width": 940,
+      "height": 940,
+      "text": "[Key Appliances in a Property]",
+      "contentMedia": {
+        "type": "video",
+        "src": "/Assets/Module 5/Chapter 3/Segment 1/5.3.1 Key Appliances in a Property.mov"
+      }
+    },
+    {
+      "id": "b3",
+      "tcStart": "00;00;39;22",
+      "tcEnd": "00;01;03;18",
+      "realLifeExamples": [],
+      "type": "circle",
+      "centerX": 4220,
+      "centerY": 663,
+      "width": 940,
+      "height": 940,
+      "text": "[Furnace and Boiler Systems]",
+      "contentMedia": {
+        "type": "video",
+        "src": "/Assets/Module 5/Chapter 3/Segment 2/5.3.2 Furnace and Boiler Systems.mov"
+      }
+    },
+    {
+      "id": "b4",
+      "tcStart": "00;01;03;18",
+      "tcEnd": "00;01;38;17",
+      "realLifeExamples": [],
+      "type": "circle",
+      "centerX": 5129,
+      "centerY": 2627,
+      "width": 940,
+      "height": 940,
+      "text": "[Safety & Utilities Reminder]",
+      "contentMedia": {
+        "type": "video",
+        "src": "/Assets/Module 5/Chapter 3/Segment 3/5.3.3 Safety & Utilities Reminder.mov"
+      }
+    },
+    {
+      "id": "b9",
+      "tcStart": "00;01;38;17",
+      "tcEnd": "00;01;54;04",
+      "realLifeExamples": [],
+      "type": "pill",
+      "text": "Done",
+      "order": "done",
+      "content": "[Closing]"
+    }
+  ]
+}

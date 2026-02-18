@@ -1,0 +1,154 @@
+{
+  "id": "universal_accessibility",
+  "title": "Universal Accessibility",
+  "audioFile": "/Assets/Module 6/Chapter 1/Audio/6.1 Universal Accessibility.mp3",
+  "transcriptFile": "/Assets/Module 6/Chapter 1/Info/6.1 Universal Accessibility.txt",
+  "backgroundImage": "/Assets/Module 6/Chapter 1/Background/6_1.jpg",
+  "canvasDimensions": {
+    "width": 6000,
+    "height": 4000
+  },
+  "hotspots": [
+    {
+      "id": "b1",
+      "tcStart": "00;00;00;00",
+      "tcEnd": "00;01;45;07",
+      "realLifeExamples": [],
+      "type": "pill",
+      "label": "Start",
+      "dock": "left",
+      "order": "first",
+      "text": "[Intro]",      
+      "contentMedia": {
+      "type": "video",
+        "src": ["/Assets/Module 6/Chapter 1/Segment 1/6.1.1 Accessibility Intro.mov","/Assets/Module 6/Chapter 1/Segment 1/6.1.1 (Universal Accessibility Intro) Video 2.mov","/Assets/Module 6/Chapter 1/Segment 1/6.1.1 (Universal Accessibility Intro) Video 3.mov"]
+      }
+    },
+    {
+      "id": "b2",
+      "tcStart": "00;01;45;07",
+      "tcEnd": "00;02;12;07",
+      "realLifeExamples": [],
+      "type": "circle",
+      "centerX": 1101,
+      "centerY": 2824,
+      "width": 940,
+      "height": 940,
+      "text": "[Measurements]",
+      "contentMedia": {
+        "type": "video",
+        "src": "/Assets/Module 6/Chapter 1/Segment 2/6.1.2 Measurements.mp4"
+      }
+    },
+    {
+      "id": "b3",
+      "tcStart": "00;02;12;07",
+      "tcEnd": "00;04;20;11",
+      "realLifeExamples": [],
+      "type": "circle",
+      "centerX": 834,
+      "centerY": 1715,
+      "width": 940,
+      "height": 940,
+      "text": "[Accessible Bathroom]",
+      "contentMedia": {
+        "type": "video",
+        "src": ["/Assets/Module 6/Chapter 1/Segment 3/6.1.3.A Accessible Bathroom.mov","/Assets/Module 6/Chapter 1/Segment 3/6.1.3.B Accessible Bathroom.mov","/Assets/Module 6/Chapter 1/Segment 3/6.1.3 (Accessible Bathroom) Video 3.mov"]
+      }
+    },
+    {
+      "id": "b4",
+      "tcStart": "00;04;20;11",
+      "tcEnd": "00;04;59;16",
+      "realLifeExamples": [],
+      "type": "circle",
+      "centerX": 1713,
+      "centerY": 767,
+      "width": 940,
+      "height": 940,
+      "text": "[Accessible Bedroom]",
+      "contentMedia": {
+        "type": "video",
+        "src": "/Assets/Module 6/Chapter 1/Segment 4/6.1.4 Accessible Bedroom.mov"
+      }
+    },
+    {
+      "id": "b5",
+      "tcStart": "00;04;59;16",
+      "tcEnd": "00;05;50;22",
+      "realLifeExamples": [],
+      "type": "circle",
+      "centerX": 3028,
+      "centerY": 536,
+      "width": 940,
+      "height": 940,
+      "text": "[Accessible Common Spaces]",
+      "contentMedia": {
+        "type": "video",
+        "src": "/Assets/Module 6/Chapter 1/Segment 5/6.1.5 Accessible Common Spaces.mov"
+      }
+    },
+    {
+      "id": "b6",
+      "tcStart": "00;05;50;22",
+      "tcEnd": "00;06;08;28",
+      "realLifeExamples": [],
+      "type": "circle",
+      "centerX": 4264,
+      "centerY": 769,
+      "width": 940,
+      "height": 940,
+      "text": "[Parking Considerations]",
+      "contentMedia": {
+        "type": "video",
+        "src": "/Assets/Module 6/Chapter 1/Segment 6/6.1.6 Parking Considerations.mov"
+      }
+    },
+    {
+      "id": "b7",
+      "tcStart": "00;06;08;28",
+      "tcEnd": "00;07;03;20",
+      "realLifeExamples": [],
+      "type": "circle",
+      "centerX": 5176,
+      "centerY": 1709,
+      "width": 940,
+      "height": 940,
+      "text": "[Host Access]",
+      "contentMedia": {
+        "type": "video",
+        "src": "/Assets/Module 6/Chapter 1/Segment 7/6.1.7 Host Access.mp4"
+      }
+    },
+    {
+      "id": "b8",
+      "tcStart": "00;07;03;20",
+      "tcEnd": "00;07;53;25",
+      "realLifeExamples": [],
+      "type": "circle",
+      "centerX": 4912,
+      "centerY": 2824,
+      "width": 940,
+      "height": 940,
+      "text": "[Additional Items]",
+      "contentMedia": {
+        "type": "video",
+        "src": "/Assets/Module 6/Chapter 1/Segment 8/6.1.8 Additional Items.mp4"
+      }
+    },
+    {
+      "id": "b9",
+      "tcStart": "00;07;53;25",
+      "tcEnd": "00;08;37;26",
+      "realLifeExamples": [],
+      "type": "pill",
+      "text": "Done",
+      "order": "done",
+      "content": "[Closing]",
+      "contentMedia": {
+      "type": "video",
+        "src": "/Assets/Module 6/Chapter 1/Segment 9/6.1.9 Outro.mov"
+      }
+    }
+  ]
+}

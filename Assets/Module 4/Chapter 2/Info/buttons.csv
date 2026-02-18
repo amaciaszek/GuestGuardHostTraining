@@ -1,0 +1,7 @@
+﻿Button,Time Start,Time End,Button X,Button Y,Text
+Intro,00;00;00;00,00;00;15;00,NULL,NULL,Intro
+Segment 1,00;00;15;00,00;00;28;26,754,2365,Privacy & Facilities
+Segment 2,00;00;28;26,00;01;01;11,1558,1129,Common Areas
+Segment 3,00;01;01;11,00;01;32;08,4457,1129,Hypothetical Example 
+Segment 4,00;01;32;08,00;01;59;04,5239,2362,Party Rules
+Closing,00;01;59;04,00;02;20;09,NULL,NULL,Closing

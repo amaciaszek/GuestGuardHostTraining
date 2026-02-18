@@ -1,0 +1,6 @@
+﻿Button,Time Start,Time End,Button X,Button Y,Text
+Intro,00;00;00;00,00;00;14;16,NULL,NULL,Intro
+Segment 1,00;00;14;16,00;00;42;06,895,1987,Safe Spaces in the Home
+Segment 2,00;00;42;06,00;01;30;05,4220,663,Noise Levels & Standards
+Segment 3,00;01;30;05,00;01;55;23,5129,2627,Hypothetical Example
+Closing,00;01;55;23,00;02;12;04,NULL,NULL,Closing

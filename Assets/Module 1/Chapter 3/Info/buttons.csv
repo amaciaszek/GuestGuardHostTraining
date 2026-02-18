@@ -1,0 +1,7 @@
+﻿Button,Time Start,Time End,Button X,Button Y,Text
+Intro,00;00;00;00,00;00;11;06,NULL,NULL,Intro
+Segment 1,00;00;11;06,00;00;42;18,754,2365,Accessibility & Placement
+Segment 2,00;00;42;18,00;01;23;15,1558,1129,"Compliance, Tagging & Condition"
+Segment 3,00;01;23;15,00;01;50;23,4457,1129,Types of Extinguishers
+Segment 4,00;01;50;23,00;02;20;04,5239,2362,Hypothetical Example
+Closing,00;02;20;04,00;02;41;26,NULL,NULL,Closing

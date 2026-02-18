@@ -1,0 +1,152 @@
+{
+  "id": "facility_planning_hazards",
+  "title": " - Facility Planning - Hazards",
+  "audioFile": "/Assets/Module 2/Chapter 2/Audio/2.2_Facility Planning_Hazards.mp3",
+  "transcriptFile": "/Assets/Module 2/Chapter 2/Info/2_2.txt",
+  "backgroundImage": "/Assets/Module 2/Chapter 2/Background/2_2.jpg",
+  "canvasDimensions": {
+    "width": 6000,
+    "height": 4000
+  },
+  "hotspots": [
+    {
+      "id": "b1",
+      "tcStart": "00;00;00;00",
+      "tcEnd": "00;00;13;11",
+      "realLifeExamples": [],
+      "type": "pill",
+      "label": "Start",
+      "dock": "left",
+      "order": "first",
+      "text": "[Intro]"
+    },
+    {
+      "id": "b2",
+      "tcStart": "00;00;13;11",
+      "tcEnd": "00;00;29;05",
+      "realLifeExamples": [],
+      "type": "circle",
+      "centerX": 1101,
+      "centerY": 2824,
+      "width": 940,
+      "height": 940,
+      "text": "[Common Hazards in Homes]",
+      "contentMedia": {
+        "type": "video",
+        "src": "/Assets/Module 2/Chapter 2/Segment 1/Common Hazards in Home.mov"
+      }
+    },
+    {
+      "id": "b3",
+      "tcStart": "00;00;29;05",
+      "tcEnd": "00;01;07;23",
+      "realLifeExamples": [
+        "/Assets/Module 2/Chapter 2/Segment 2/Examples/House Mold (shutterstock).jpg"
+      ],
+      "type": "circle",
+      "centerX": 834,
+      "centerY": 1715,
+      "width": 940,
+      "height": 940,
+      "text": "[What Hazards Are & How to Identify Them]",
+      "contentMedia": {
+        "type": "video",
+        "src": "/Assets/Module 2/Chapter 2/Segment 2/Mold.mov"
+      }
+    },
+    {
+      "id": "b4",
+      "tcStart": "00;01;07;23",
+      "tcEnd": "00;01;22;14",
+      "realLifeExamples": [
+        "/Assets/Module 2/Chapter 2/Segment 3/Examples/Weathertight Home (Shutterstock).jpg"
+      ],
+      "type": "circle",
+      "centerX": 1713,
+      "centerY": 767,
+      "width": 940,
+      "height": 940,
+      "text": "[Weathertight Properties]",
+      "contentMedia": {
+        "type": "video",
+        "src": "/Assets/Module 2/Chapter 2/Segment 3/Weathertight Properties.mov"
+      }
+    },
+    {
+      "id": "b5",
+      "tcStart": "00;01;22;14",
+      "tcEnd": "00;01;40;04",
+      "realLifeExamples": [
+        "/Assets/Module 2/Chapter 2/Segment 4/Examples/Facility Planning, Sewer System, Real Life Example New Photo.jpg"
+      ],
+      "type": "circle",
+      "centerX": 3028,
+      "centerY": 536,
+      "width": 940,
+      "height": 940,
+      "text": "[Sewer Systems]",
+      "contentMedia": {
+        "type": "video",
+        "src": "/Assets/Module 2/Chapter 2/Segment 4/Sewer Systems.mov"
+      }
+    },
+    {
+      "id": "b6",
+      "tcStart": "00;01;40;04",
+      "tcEnd": "00;02;08;26",
+      "realLifeExamples": [
+        "/Assets/Module 2/Chapter 2/Segment 5/Examples/House Pest Control (Shutterstock).jpg"
+      ],
+      "type": "circle",
+      "centerX": 4264,
+      "centerY": 769,
+      "width": 940,
+      "height": 940,
+      "text": "[Pests & Pest Programs]",
+      "contentMedia": {
+        "type": "video",
+        "src": "/Assets/Module 2/Chapter 2/Segment 5/Facility Planning, Pest & Pest Programs New Video.mov"
+      }
+    },
+    {
+      "id": "b7",
+      "tcStart": "00;02;08;26",
+      "tcEnd": "00;02;29;11",
+      "realLifeExamples": [
+        "/Assets/Module 2/Chapter 2/Segment 6/Examples/House Non-Smoking (Shutterstock).jpg"
+      ],
+      "type": "circle",
+      "centerX": 5176,
+      "centerY": 1709,
+      "width": 940,
+      "height": 940,
+      "text": "[Odor & Smoking Policies]",
+      "contentMedia": {
+        "type": "video",
+        "src": "/Assets/Module 2/Chapter 2/Segment 6/Odor and Smoking.mov"
+      }
+    },
+    {
+      "id": "b8",
+      "tcStart": "00;02;29;11",
+      "tcEnd": "00;03;03;12",
+      "realLifeExamples": [],
+      "type": "circle",
+      "centerX": 4912,
+      "centerY": 2824,
+      "width": 940,
+      "height": 940,
+      "text": "[Hypothetical Example]"
+    },
+    {
+      "id": "b9",
+      "tcStart": "00;03;03;12",
+      "tcEnd": "00;03;25;19",
+      "realLifeExamples": [],
+      "type": "pill",
+      "text": "Done",
+      "order": "done",
+      "content": "[Closing]"
+    }
+  ]
+}

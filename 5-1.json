@@ -1,0 +1,91 @@
+{
+  "id": "amenities_pets_cleanliness_appliances_amenities",
+  "title": " - Amenities Pets Cleanliness Appliances - Amenities",
+  "audioFile": "/Assets/Module 5/Chapter 1/Audio/5.1_Amenities Pets Cleanliness Appliances_Amenities.wav",
+  "transcriptFile": "/Assets/Module 5/Chapter 1/Info/5.1_Amenities Pets Cleanliness Appliances_Amenities.txt",
+  "backgroundImage": "/Assets/Module 5/Chapter 1/Background/5_1.jpg",
+  "canvasDimensions": {
+    "width": 6000,
+    "height": 4000
+  },
+  "hotspots": [
+    {
+      "id": "b1",
+      "tcStart": "00;00;00;00",
+      "tcEnd": "00;00;23;12",
+      "realLifeExamples": [],
+      "type": "pill",
+      "label": "Start",
+      "dock": "left",
+      "order": "first",
+      "text": "[Intro]"
+    },
+    {
+      "id": "b2",
+      "tcStart": "00;00;23;12",
+      "tcEnd": "00;00;38;02",
+      "realLifeExamples": [],
+      "type": "circle",
+      "centerX": 895,
+      "centerY": 1987,
+      "width": 940,
+      "height": 940,
+      "text": "[Why Amenities Matter]",
+      "contentMedia": {
+        "type": "video",
+        "src": "/Assets/Module 5/Chapter 1/Segment 1/5.1.1 Why Amenities Matter.mov"
+      }
+    },
+    {
+      "id": "b3",
+      "tcStart": "00;00;38;02",
+      "tcEnd": "00;01;33;17",
+      "realLifeExamples": [],
+      "type": "circle",
+      "centerX": 4220,
+      "centerY": 663,
+      "width": 940,
+      "height": 940,
+      "text": "[Specific Amenities for Hosts to Consider]",
+      "contentMedia": {
+        "type": "video",
+        "src": "/Assets/Module 5/Chapter 1/Segment 2/5.1.2 Specific Amenities for Hosts to Consider.mov"
+      }
+    },
+    {
+      "id": "b4",
+      "tcStart": "00;01;33;17",
+      "tcEnd": "00;02;13;19",
+      "realLifeExamples": [
+        "/Assets/Module 5/Chapter 1/Segment 3/Examples/5.1 Curiosities, Close-Up.jpg",
+        "/Assets/Module 5/Chapter 1/Segment 3/Examples/5.1 Guest Bathroom (Amenities).jpg",
+        "/Assets/Module 5/Chapter 1/Segment 3/Examples/5.1 Guest Books.jpg",
+        "/Assets/Module 5/Chapter 1/Segment 3/Examples/5.1 Guest Fireplace.jpg",
+        "/Assets/Module 5/Chapter 1/Segment 3/Examples/5.1 Guest Room Amenities I.jpg",
+        "/Assets/Module 5/Chapter 1/Segment 3/Examples/5.1 Guest Room TV.jpg",
+        "/Assets/Module 5/Chapter 1/Segment 3/Examples/5.1 Home Interior, Tourism Booklet.jpg",
+        "/Assets/Module 5/Chapter 1/Segment 3/Examples/5.1 Tourism Brochures.jpg"
+      ],
+      "type": "circle",
+      "centerX": 5129,
+      "centerY": 2627,
+      "width": 940,
+      "height": 940,
+      "text": "[Hypothetical Example]",
+      "contentMedia": {
+        "type": "video",
+        "src": "/Assets/Module 5/Chapter 1/Segment 3/5.1.3 Hypothetical Example.mov"
+      }
+    },
+    {
+      "id": "b9",
+      "tcStart": "00;02;13;19",
+      "tcEnd": "00;02;21;20",
+      "realLifeExamples": [],
+      "type": "pill",
+      "text": "Done",
+      "order": "done",
+      "content": "[Closing]"
+    }
+  ]
+}

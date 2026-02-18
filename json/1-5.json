@@ -1,0 +1,130 @@
+{
+  "id": "fire_safety_facility_safety_and_general_maintenance",
+  "title": "Fire Safety - Facility Safety and General Maintenance",
+  "audioFile": "/Assets/Module 1/Chapter 5/Audio/1.5 Fire Safety_Facility Safety and General Maintenance.mp3",
+  "transcriptFile": "/Assets/Module 1/Chapter 5/Info/1.5 Fire Safety_Facility Safety and General Maintenance.txt",
+  "backgroundImage": "/Assets/Module 1/Chapter 5/Background/1_5.jpg",
+  "canvasDimensions": {
+    "width": 6000,
+    "height": 4000  
+},
+  "hotspots": [
+    {
+      "id": "b1",
+      "tcStart": "00;00;00;00",
+      "tcEnd": "00;00;13;24",
+      "realLifeExamples": [],
+      "type": "pill",
+      "label": "Start",
+      "dock": "left",
+      "order": "first",
+      "text": "[Intro]"
+    },
+    {
+      "id": "b2",
+      "tcStart": "00;00;13;24",
+      "tcEnd": "00;00;43;29",
+      "realLifeExamples": ["/Assets/Module 1/Chapter 5/Segment 1/Examples/1.5 Breaker Box Close-Up.jpg","/Assets/Module 1/Chapter 5/Segment 1/Examples/1.5 Breaker Box, Messy Labelling.jpg","/Assets/Module 1/Chapter 5/Segment 1/Examples/1.5 Breaker Box, Obstructed.jpg","/Assets/Module 1/Chapter 5/Segment 1/Examples/1.5 Breaker Box, Unobstructed.jpg"],
+      "type": "circle",
+      "centerX": 960,
+      "centerY": 2764,
+      "width": 940,
+      "height": 940,
+      "text": "[Electrical Systems & Breaker Boxes]",
+      "contentMedia": {
+        "type": "video",
+        "src": "/Assets/Module 1/Chapter 5/Segment 1/1.5.1 Electrical Systems & Breaker Boxes.mov"
+      }
+    },
+    {
+      "id": "b3",
+      "tcStart": "00;00;43;29",
+      "tcEnd": "00;01;19;15",
+      "realLifeExamples": [],
+      "type": "circle",
+      "centerX": 847,
+      "centerY": 1515,
+      "width": 940,
+      "height": 940,
+      "text": "[Outlets]",
+      "contentMedia": {
+        "type": "video",
+        "src": "/Assets/Module 1/Chapter 5/Segment 2/1.5.2 Outlets.mov"
+      }
+    },
+    {
+      "id": "b4",
+      "tcStart": "00;01;19;15",
+      "tcEnd": "00;01;47;06",
+      "realLifeExamples": [],
+      "type": "circle",
+      "centerX": 1952,
+      "centerY": 683,
+      "width": 940,
+      "height": 940,
+      "text": "[Heating Types in the Home]",
+      "contentMedia": {
+        "type": "video",
+        "src": "/Assets/Module 1/Chapter 5/Segment 3/1.5.3 Heating Types in the Home.mov"
+      }
+    },
+    {
+      "id": "b5",
+      "tcStart": "00;01;47;06",
+      "tcEnd": "00;02;11;10",
+      "realLifeExamples": ["/Assets/Module 1/Chapter 5/Segment 1/Examples/1.5 Common Area Fireplace Curiosities.jpg"],
+      "type": "circle",
+      "centerX": 4049,
+      "centerY": 683,
+      "width": 940,
+      "height": 940,
+      "text": "[Standards for Open Flames]",
+      "contentMedia": {
+        "type": "video",
+        "src": "/Assets/Module 1/Chapter 5/Segment 4/1.5.4 Standards for Open Flames.mov"
+      }
+    },
+    {
+      "id": "b6",
+      "tcStart": "00;02;11;10",
+      "tcEnd": "00;02;38;01",
+      "realLifeExamples": [],
+      "type": "circle",
+      "centerX": 5158,
+      "centerY": 1517,
+      "width": 940,
+      "height": 940,
+      "text": "[Certification & Training]",
+      "contentMedia": {
+        "type": "video",
+        "src": "/Assets/Module 1/Chapter 5/Segment 5/1.5.5 Certification & Training.mov"
+      }
+    },
+    {
+      "id": "b7",
+      "tcStart": "00;02;38;01",
+      "tcEnd": "00;03;00;08",
+      "realLifeExamples": [],
+      "type": "circle",
+      "centerX": 5048,
+      "centerY": 2758,
+      "width": 940,
+      "height": 940,
+      "text": "[Flammable Gas Storage]",
+      "contentMedia": {
+        "type": "video",
+        "src": "/Assets/Module 1/Chapter 5/Segment 6/1.5.6 Flammable Gas Storage.mov"
+      }
+    },
+    {
+      "id": "b9",
+      "tcStart": "00;03;00;08",
+      "tcEnd": "00;03;24;03",
+      "realLifeExamples": [],
+      "type": "pill",
+      "text": "Done",
+      "order": "done",
+      "content": "[Closing]"
+    }
+  ]
+}

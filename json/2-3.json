@@ -1,0 +1,80 @@
+{
+  "id": "facility_planning_other_considerations",
+  "title": "Facility Planning - Other Considerations",
+  "audioFile": "/Assets/Module 2/Chapter 3/Audio/2.3 Facility Planning_Other Considerations.wav",
+  "transcriptFile": "/Assets/Module 2/Chapter 3/Info/2_3.txt",
+  "backgroundImage": "/Assets/Module 2/Chapter 3/Background/2_3.jpg",
+  "canvasDimensions": {
+    "width": 6000,
+    "height": 4000
+  },
+  "hotspots": [
+    {
+      "id": "b1",
+      "tcStart": "00;00;00;00",
+      "tcEnd": "00;00;14;16",
+      "realLifeExamples": [],
+      "type": "pill",
+      "label": "Start",
+      "dock": "left",
+      "order": "first",
+      "text": "[Intro]"
+    },
+    {
+      "id": "b2",
+      "tcStart": "00;00;14;16",
+      "tcEnd": "00;00;42;06",
+      "realLifeExamples": [],
+      "type": "circle",
+      "centerX": 895,
+      "centerY": 1987,
+      "width": 940,
+      "height": 940,
+      "text": "[Safe Spaces in the Home]",
+      "contentMedia": {
+        "type": "video",
+        "src": "/Assets/Module 2/Chapter 3/Segment 1/Home Evacuation (Shutterstock).mov"
+      }
+    },
+    {
+      "id": "b3",
+      "tcStart": "00;00;42;06",
+      "tcEnd": "00;01;29;18",
+      "realLifeExamples": [
+        "/Assets/Module 2/Chapter 3/Segment 2/Examples/Noise Testing (Shutterstock).jpg"
+      ],
+      "type": "circle",
+      "centerX": 4220,
+      "centerY": 663,
+      "width": 940,
+      "height": 940,
+      "text": "[Noise Levels & Standards]",
+      "contentMedia": {
+        "type": "video",
+        "src": ["/Assets/Module 2/Chapter 3/Segment 2/Noise Levels and Standards.mov","/Assets/Module 2/Chapter 3/Segment 2/Facility Planning, Other Considerations, Noise Levels Video 2.mov"]
+      }
+    },
+    {
+      "id": "b4",
+      "tcStart": "00;01;29;18",
+      "tcEnd": "00;01;55;23",
+      "realLifeExamples": [],
+      "type": "circle",
+      "centerX": 5129,
+      "centerY": 2627,
+      "width": 940,
+      "height": 940,
+      "text": "[Hypothetical Example]"
+    },
+    {
+      "id": "b9",
+      "tcStart": "00;01;55;23",
+      "tcEnd": "00;02;12;04",
+      "realLifeExamples": [],
+      "type": "pill",
+      "text": "Done",
+      "order": "done",
+      "content": "[Closing]"
+    }
+  ]
+}

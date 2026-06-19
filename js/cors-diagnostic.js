@@ -91,7 +91,7 @@
     const resultsDiv = document.getElementById('corsResults');
     resultsDiv.innerHTML = '<div style="text-align: center;">Testing... ⏳</div>';
     
-    const API_URL = 'https://guestguard-platform.vercel.app/api/training-auth';
+    const API_URL = 'https://guestguard-platform.vercel.app/api/auth/training/exchange-token';
     const tests = [];
     
     // Test 1: Simple GET request

@@ -143,8 +143,8 @@ const TRAINING_STRUCTURE = [
 
 // API Configuration
 const API_BASE = 'https://guestguard-platform.vercel.app';
-const SUPABASE_URL = 'https://uwbwaujbvqctmcpgqhds.supabase.co';
-const SUPABASE_ANON = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InV3YndhVWpiVnFjdG1jcGdxaGRzIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDkzNjU2NDksImV4cCI6MjA2NDk0MTY0OX0.sb_publishable_4thWdEYtuLNTZ0R0F9Bw1w_tzYEyH9R';
+const SUPABASE_URL = 'https://database.guestguard.com';
+const SUPABASE_ANON = 'sb_publishable_4thWdEYtuLNTZ0R0F9Bw1w_tzYEyH9R';
 
 // Debug Configuration
 const CAPTION_DEBUG = true;

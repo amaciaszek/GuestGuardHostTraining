@@ -346,7 +346,7 @@
         console.log('🔑 [AUTH DEBUG] Starting temp token exchange...');
         console.log('🔑 [AUTH DEBUG] Temp token:', tempToken ? `${tempToken.substring(0, 20)}... (${tempToken.length} chars)` : 'NULL/UNDEFINED');
         
-        const apiUrl = `${API_BASE}/api/training-auth?temp_token=${encodeURIComponent(tempToken)}`;
+        const apiUrl = `${API_BASE}/api/auth/training/exchange-token?temp_token=${encodeURIComponent(tempToken)}`;
         console.log('🔑 [AUTH DEBUG] API URL:', apiUrl);
         
         const response = await fetch(apiUrl, {
@@ -562,7 +562,7 @@
       try {
         console.log('📥 Fetching progress from server...');
         
-        const response = await this.fetchWithAuth(`${API_BASE}/api/training-progress`, {
+        const response = await this.fetchWithAuth(`${API_BASE}/api/profiles/training-progress/host`, {
           method: 'GET',
           headers: { 'Accept': 'application/json' }
         });
@@ -932,7 +932,7 @@
       
       // Use retry wrapper for posting progress
       const result = await this.fetchWithRetry(async () => {
-        const response = await this.fetchWithAuth(`${API_BASE}/api/training-progress`, {
+        const response = await this.fetchWithAuth(`${API_BASE}/api/profiles/training-progress/host`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify(payload)

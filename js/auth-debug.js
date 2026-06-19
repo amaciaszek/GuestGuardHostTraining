@@ -172,7 +172,7 @@ document.addEventListener('DOMContentLoaded', () => {
   // Test with a dummy token after a short delay
   setTimeout(() => {
     window.iosDebug.log('🔍 Testing auth endpoint accessibility...');
-    testEndpoint(`${API_BASE}/api/training-auth?temp_token=test`);
+    testEndpoint(`${API_BASE}/api/auth/training/exchange-token?temp_token=test`);
   }, 1000);
 });
 

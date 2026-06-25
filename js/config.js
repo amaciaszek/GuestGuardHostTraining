@@ -142,7 +142,7 @@ const TRAINING_STRUCTURE = [
 ];
 
 // API Configuration
-const API_BASE = 'https://guestguard-platform.vercel.app';
+const API_BASE = 'https://portal.guestguard.com';
 const SUPABASE_URL = 'https://database.guestguard.com';
 const SUPABASE_ANON = 'sb_publishable_4thWdEYtuLNTZ0R0F9Bw1w_tzYEyH9R';
 

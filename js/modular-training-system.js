@@ -1427,6 +1427,23 @@ const id = button.id;
           this.videoState.videos = null;
           this.videoState.currentIndex = 0;
           this.videoState.playCount = [0, 0];
+
+          // Surface video load failures instead of leaving a frozen black box.
+          // Logs the failing source and the MediaError code, and shows a small
+          // visible note in the media area (added only once per segment).
+          const attachVideoError = (videoEl) => {
+            videoEl.addEventListener('error', () => {
+              const failedSrc = videoEl.currentSrc || videoEl.src;
+              const code = videoEl.error ? videoEl.error.code : 'unknown';
+              console.error('❌ Video failed to load:', failedSrc, '(MediaError code:', code + ')');
+              if (!media.querySelector('.video-error-note')) {
+                media.appendChild(el('div', {
+                  class: 'video-error-note',
+                  style: 'position:absolute;inset:0;display:flex;align-items:center;justify-content:center;text-align:center;color:#ff9b9b;font-size:14px;padding:16px;background:#000;z-index:3;'
+                }, '⚠️ This video could not be loaded.'));
+              }
+            });
+          };
           
           // Get video source(s) - could be string or array
           const rawVideoSrc = h.video || h.contentMedia.src;
@@ -1444,6 +1461,7 @@ const id = button.id;
             vid.playsInline = true; 
             vid.loop = false; // Don't loop - we'll handle switching manually
             vid.controls = false;
+            attachVideoError(vid);
             
             // Set up alternating playback when video ends
             vid.addEventListener('ended', () => {
@@ -1506,6 +1524,9 @@ const id = button.id;
             vid2.loop = false;
             vid2.controls = false;
             vid2.preload = 'auto'; // Preload second video
+
+            attachVideoError(vid1);
+            attachVideoError(vid2);
             
             // State for tracking which video is active
             const crossfadeState = {

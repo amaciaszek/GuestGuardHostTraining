@@ -44,9 +44,8 @@ body {
   max-width: var(--stage-max-width);
   margin-inline: auto;
   
-  /* Large fixed height for prominent stage display */
-  height: 90vh;
-  min-height: 700px;
+  /* Height hugs the stage so there's no black filler below it */
+  height: auto;
 
   border-radius: 28px;
   border: 2px solid rgba(255, 255, 255, .12);

@@ -885,6 +885,43 @@
       console.log('🎓 ALL TRAINING COMPLETE!');
       return true;
     },
+
+    // Calculate overall completion as a whole-number percentage (0-100).
+    // Uses the same time-based logic as the progress panel: percentage of total
+    // training seconds completed, falling back to segment count if timing data
+    // isn't available. This is included in the saved payload as percentCompleted
+    // so the platform can display it without recomputing.
+    calculateOverallPercent() {
+      let totalSegments = 0;
+      let completedSegments = 0;
+      let totalSeconds = 0;
+      let completedSeconds = 0;
+
+      for (const key in this.allChapters) {
+        const progress = this.allChapters[key].progress || {};
+        const current = progress.currentSegment || 0;
+        const total = progress.totalSegments || 0;
+
+        const chapterDuration = this.getChapterDuration(key);
+        const segmentDurations = (window.SEGMENT_TIMINGS && window.SEGMENT_TIMINGS[key])
+          ? window.SEGMENT_TIMINGS[key].durations
+          : [];
+
+        let chapterCompletedTime = 0;
+        for (let i = 0; i < current && i < segmentDurations.length; i++) {
+          chapterCompletedTime += segmentDurations[i];
+        }
+
+        totalSeconds += chapterDuration;
+        completedSeconds += chapterCompletedTime;
+        totalSegments += total;
+        completedSegments += current;
+      }
+
+      if (totalSeconds > 0) return Math.round((completedSeconds / totalSeconds) * 100);
+      if (totalSegments > 0) return Math.round((completedSegments / totalSegments) * 100);
+      return 0;
+    },
     
     // Post progress for current segment
     async postSegmentProgress(segmentNum, completed = false) {
@@ -924,6 +961,7 @@
         training_progress: {
           modules: modulesData,
           complete_training: this.isAllTrainingComplete(),
+          percentCompleted: this.calculateOverallPercent(),
           last_updated: new Date().toISOString()
         }
       };

@@ -117,6 +117,10 @@
 // ===== Additional Network Debugging =====
 
 // Test CORS and endpoint availability
+// NOTE: This is an on-demand helper only. It is intentionally NOT auto-run,
+// because probing the auth endpoint with a dummy token produces a misleading
+// 500 error in the console on every page load. Call testEndpoint(url) manually
+// from the console if you need to check an endpoint.
 async function testEndpoint(url) {
   window.iosDebug.log('🧪 Testing endpoint:', url);
   
@@ -165,16 +169,9 @@ async function testEndpoint(url) {
   }
 }
 
-// Auto-test the auth endpoint when page loads
-document.addEventListener('DOMContentLoaded', () => {
-  const API_BASE = 'https://guestguard-platform.vercel.app';
-  
-  // Test with a dummy token after a short delay
-  setTimeout(() => {
-    window.iosDebug.log('🔍 Testing auth endpoint accessibility...');
-    testEndpoint(`${API_BASE}/api/auth/training/exchange-token?temp_token=test`);
-  }, 1000);
-});
+// (Auto-test of the auth endpoint on page load has been removed. It fired a
+// dummy temp_token=test request that always returned 500, which looked like a
+// real error in the console and repeatedly sent people chasing a non-issue.)
 
 // ===== URL Parameter Debugging =====
 document.addEventListener('DOMContentLoaded', () => {

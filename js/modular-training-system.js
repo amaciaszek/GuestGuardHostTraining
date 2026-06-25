@@ -1,3 +1,9 @@
+// ===== Debug verbosity =====
+// Flip to true to see the firehose (asset resolution, animation geometry, etc.).
+// Left false so the console stays readable and real problems are visible.
+const VERBOSE_DEBUG = false;
+function vlog(){ if (VERBOSE_DEBUG) console.log.apply(console, arguments); }
+
 class ModularTrainingSystem {
 
   // === [Captions Helpers] ===
@@ -182,7 +188,7 @@ resolveAsset(p){
       let adjustedPath = p;
       if (p.startsWith('/')) {
         adjustedPath = p.substring(1); // Remove leading slash
-        console.log(`🔧 Converted root-relative to relative: ${p} → ${adjustedPath}`);
+        vlog(`🔧 Converted root-relative to relative: ${p} → ${adjustedPath}`);
       }
       
       // URL encode the path components to handle spaces and special characters
@@ -195,7 +201,7 @@ resolveAsset(p){
       // This resolves relative to the current page location automatically
       try {
         const resolved = new URL(encodedPath, window.location.href).href;
-        console.log(`🔗 Resolved: ${adjustedPath} → ${resolved}`);
+        vlog(`🔗 Resolved: ${adjustedPath} → ${resolved}`);
         return resolved;
       } catch (e) {
         console.error(`❌ Failed to resolve: ${p}`, e);
@@ -711,7 +717,12 @@ initStorage(){
       const audioSrc = this.resolveAsset(this.config.audioFile || '');
       if (audioSrc) {
         this.audio.src = audioSrc;
-        this.audio.addEventListener('error', (e) => console.error('Audio error:', e, this.audio.error));
+        this.audio.addEventListener('error', () => {
+          const code = this.audio.error ? this.audio.error.code : 'unknown';
+          console.error('%c🔊 AUDIO FILE FAILED TO LOAD ❌', 'background:#b00020;color:#fff;font-weight:700;padding:2px 6px;border-radius:4px;',
+            '\n   url:', this.audio.currentSrc || audioSrc,
+            '\n   MediaError code:', code, '(1=aborted, 2=network, 3=decode, 4=src not supported/404)');
+        });
       } else {
         this.audio.removeAttribute('src');
       }
@@ -1283,7 +1294,25 @@ initStorage(){
           this.audio.playbackRate = 1.0;
         }
         
+        // ===== FOCUSED AUDIO DIAGNOSTIC =====
+        const AU = 'background:#7b2ff7;color:#fff;font-weight:700;padding:2px 6px;border-radius:4px;';
+        const NET = ['EMPTY','IDLE','LOADING','NO_SOURCE'];
+        const RDY = ['HAVE_NOTHING','HAVE_METADATA','HAVE_CURRENT','HAVE_FUTURE','HAVE_ENOUGH'];
+        console.log('%c🔊 AUDIO try', AU, {
+          src: this.audio.currentSrc || this.audio.src || '(none)',
+          networkState: NET[this.audio.networkState] || this.audio.networkState,
+          readyState: RDY[this.audio.readyState] || this.audio.readyState,
+          mediaError: this.audio.error ? this.audio.error.code : null,
+          paused: this.audio.paused,
+          muted: this.audio.muted,
+          volume: this.audio.volume,
+          duration: this.audio.duration,
+          seekTo: this.audio.currentTime,
+          segWindow: [this.seg.start, this.seg.end]
+        });
+
         this.audio.play().then(()=>{
+          console.log('%c🔊 AUDIO playing ✅', 'background:#0a7d33;color:#fff;font-weight:700;padding:2px 6px;border-radius:4px;');
           // Handle video playback - check for crossfade system first
           if (this.seg.crossfadeState && this.seg.crossfadeState.activeVideo) {
             // Crossfade system active - play the currently active video
@@ -1308,7 +1337,17 @@ initStorage(){
           if (status) status.textContent='Playing';
           cancelAnimationFrame(this.seg.rafId);
           this.seg.rafId = requestAnimationFrame(syncUI);
-        }).catch(()=>{
+        }).catch((err)=>{
+          // Reveal WHY audio didn't start instead of hiding it.
+          console.error('%c🔊 AUDIO BLOCKED ❌', 'background:#b00020;color:#fff;font-weight:700;padding:2px 6px;border-radius:4px;',
+            err && err.name, '—', err && err.message);
+          if (err && err.name === 'NotAllowedError') {
+            console.error('   → Browser autoplay policy: audio needs a user click. (Video is muted, so it was allowed; audio is not.)');
+          } else if (this.audio.error) {
+            console.error('   → Media error code', this.audio.error.code, '— the audio file failed to load/decode. Check the .wav URL/format.');
+          } else {
+            console.error('   → Unexpected. Full error object:', err);
+          }
           if (status) status.textContent='Tap Play to start audio';
         });
       };
@@ -1338,6 +1377,11 @@ initStorage(){
                 if (status) status.textContent='Playing';
                 cancelAnimationFrame(this.seg.rafId);
                 this.seg.rafId = requestAnimationFrame(syncUI);
+              }).catch((err)=>{
+                console.error('%c🔊 AUDIO BLOCKED ❌ (play button)', 'background:#b00020;color:#fff;font-weight:700;padding:2px 6px;border-radius:4px;',
+                  err && err.name, '—', err && err.message,
+                  this.audio.error ? ('| mediaError ' + this.audio.error.code) : '');
+                if (status) status.textContent='Tap Play to start audio';
               });
             }
           } else {
@@ -1405,7 +1449,7 @@ const id = button.id;
       const e = tcToSeconds(h.tcEnd, this.FPS);
       const {title, body} = this.getTitleAndBody(h.content || h.text || '');
 
-      console.log('=== ANIMATION DEBUG START ===');
+      vlog('=== ANIMATION DEBUG START ===');
       console.log('Button clicked:', button.id);
 
       this.viewer.replaceChildren();
@@ -1427,23 +1471,6 @@ const id = button.id;
           this.videoState.videos = null;
           this.videoState.currentIndex = 0;
           this.videoState.playCount = [0, 0];
-
-          // Surface video load failures instead of leaving a frozen black box.
-          // Logs the failing source and the MediaError code, and shows a small
-          // visible note in the media area (added only once per segment).
-          const attachVideoError = (videoEl) => {
-            videoEl.addEventListener('error', () => {
-              const failedSrc = videoEl.currentSrc || videoEl.src;
-              const code = videoEl.error ? videoEl.error.code : 'unknown';
-              console.error('❌ Video failed to load:', failedSrc, '(MediaError code:', code + ')');
-              if (!media.querySelector('.video-error-note')) {
-                media.appendChild(el('div', {
-                  class: 'video-error-note',
-                  style: 'position:absolute;inset:0;display:flex;align-items:center;justify-content:center;text-align:center;color:#ff9b9b;font-size:14px;padding:16px;background:#000;z-index:3;'
-                }, '⚠️ This video could not be loaded.'));
-              }
-            });
-          };
           
           // Get video source(s) - could be string or array
           const rawVideoSrc = h.video || h.contentMedia.src;
@@ -1461,7 +1488,6 @@ const id = button.id;
             vid.playsInline = true; 
             vid.loop = false; // Don't loop - we'll handle switching manually
             vid.controls = false;
-            attachVideoError(vid);
             
             // Set up alternating playback when video ends
             vid.addEventListener('ended', () => {
@@ -1524,9 +1550,6 @@ const id = button.id;
             vid2.loop = false;
             vid2.controls = false;
             vid2.preload = 'auto'; // Preload second video
-
-            attachVideoError(vid1);
-            attachVideoError(vid2);
             
             // State for tracking which video is active
             const crossfadeState = {
@@ -1659,13 +1682,13 @@ const id = button.id;
       const rawButtonRect = button.getBoundingClientRect();
       const rawStageRect = this.stage.getBoundingClientRect();
 
-      console.log('Button rect:', {
+      vlog('Button rect:', {
         left: rawButtonRect.left,
         top: rawButtonRect.top,
         width: rawButtonRect.width,
         height: rawButtonRect.height
       });
-      console.log('Stage rect:', {
+      vlog('Stage rect:', {
         left: rawStageRect.left,
         top: rawStageRect.top,
         width: rawStageRect.width,
@@ -1695,7 +1718,7 @@ const id = button.id;
         buttonCenterY = rawButtonRect.top + rawButtonRect.height / 2 - rawStageRect.top;
       }
 
-      console.log('Button center relative to stage:', { x: buttonCenterX, y: buttonCenterY });
+      vlog('Button center relative to stage:', { x: buttonCenterX, y: buttonCenterY });
 
       let finalWidth, finalHeight, finalTop, finalLeft;
 
@@ -1712,7 +1735,7 @@ const id = button.id;
         finalLeft = stageWidth * 0.24;                   // Centered: 0.52 width at 0.24 left
       }
 
-      console.log('Calculated final dimensions:', {
+      vlog('Calculated final dimensions:', {
         width: finalWidth + 'px',
         height: finalHeight + 'px',
         top: finalTop + 'px',
@@ -1742,14 +1765,14 @@ const id = button.id;
         }
 
         this.wireAudioSegment(s, e, id);
-        console.log('=== ANIMATION DEBUG END (no animation path) ===');
+        vlog('=== ANIMATION DEBUG END (no animation path) ===');
       } else {
         this.innerWindow.classList.add('active', sizeClass);
 
         const initialTop = `${buttonCenterY - 5}px`;
         const initialLeft = `${buttonCenterX - 5}px`;
 
-        console.log('Initial position (10px at button):', {
+        vlog('Initial position (10px at button):', {
           top: initialTop,
           left: initialLeft,
           width: '10px',
@@ -1776,11 +1799,11 @@ const id = button.id;
         // Force layout before running the transition
         this.innerWindow.offsetHeight;
 
-        console.log('Starting LINEAR animation in 100ms...');
-        console.log('Window AND content should grow from 10px to full size');
+        vlog('Starting LINEAR animation in 100ms...');
+        vlog('Window AND content should grow from 10px to full size');
 
         setTimeout(() => {
-          console.log('Animating to final position:', {
+          vlog('Animating to final position:', {
             top: finalTop + 'px',
             left: finalLeft + 'px',
             width: finalWidth + 'px',
@@ -1805,7 +1828,7 @@ const id = button.id;
             viewer2.style.opacity = '1';
           }
 
-          console.log('LINEAR Animation triggered!');
+          vlog('LINEAR Animation triggered!');
 
           const dur = parseFloat(
             getComputedStyle(document.documentElement).getPropertyValue('--animation-duration')
@@ -1817,7 +1840,7 @@ const id = button.id;
           }, delay);
         }, 100);
 
-        console.log('=== ANIMATION DEBUG END ===');
+        vlog('=== ANIMATION DEBUG END ===');
       }
 
       this.stage.onclick = (ev)=>{

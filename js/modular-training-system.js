@@ -1396,17 +1396,66 @@ initStorage(){
           });
         };
 
-        // THE FIX: seek first, wait for the seek to actually land, THEN play.
-        // Playing before the seek completes is why play() resolved yet produced no
-        // sound and the timeline never moved on segments that start mid-file.
-        if (Math.abs(this.audio.currentTime - target) < 0.25 && this.audio.readyState >= 2) {
-          beginPlay();
-        } else {
+        // THE FIX: a segment starts mid-file, so we must not seek+play until the
+        // browser can actually reach that point. Seeking into an unbuffered region
+        // makes play() resolve while the timeline stays stuck at 0 (which then
+        // fights ontimeupdate's clamp, producing the re-seek loop). So: confirm the
+        // target is reachable, forcing the file to buffer first if necessary.
+
+        const targetReachable = () => {
+          if (Math.abs(this.audio.currentTime - target) < 0.25) return true;
+          try {
+            for (let i = 0; i < this.audio.buffered.length; i++) {
+              if (target >= this.audio.buffered.start(i) - 0.25 &&
+                  target <= this.audio.buffered.end(i) + 0.25) return true;
+            }
+          } catch (e) {}
+          // Whole file effectively loaded
+          if (this.audio.readyState >= 4 && this.audio.duration && target <= this.audio.duration) return true;
+          // Start of file with enough data
+          return target <= 0.25 && this.audio.readyState >= 2;
+        };
+
+        const doSeekAndPlay = () => {
+          if (Math.abs(this.audio.currentTime - target) < 0.25) { beginPlay(); return; }
           let fired = false;
           const go = () => { if (fired) return; fired = true; this.audio.removeEventListener('seeked', go); beginPlay(); };
           this.audio.addEventListener('seeked', go, { once: true });
-          setTimeout(go, 2000); // fallback if 'seeked' never fires
-          try { this.audio.currentTime = target; } catch(e){ go(); }
+          setTimeout(go, 2500); // fallback if 'seeked' never fires
+          try { this.audio.currentTime = target; } catch (e) { go(); }
+        };
+
+        if (targetReachable()) {
+          doSeekAndPlay();
+        } else {
+          // Force the element to actually pull data (a short chapter file will
+          // buffer from 0 through the target), then seek once it's reachable.
+          try {
+            this.audio.preload = 'auto';
+            if (this.audio.readyState === 0) this.audio.load();
+          } catch (e) {}
+
+          let started = false;
+          const events = ['progress', 'canplay', 'canplaythrough', 'loadeddata'];
+          const cleanup = () => events.forEach(ev => this.audio.removeEventListener(ev, onData));
+          const onData = () => {
+            if (started) return;
+            if (targetReachable()) {
+              started = true;
+              cleanup();
+              doSeekAndPlay();
+            }
+          };
+          events.forEach(ev => this.audio.addEventListener(ev, onData));
+
+          // Hard fallback: after 4s, attempt the seek regardless (watchdog + the
+          // Click-to-play overlay remain as last-resort safety nets).
+          setTimeout(() => {
+            if (started) return;
+            started = true;
+            cleanup();
+            doSeekAndPlay();
+          }, 4000);
         }
       };
 

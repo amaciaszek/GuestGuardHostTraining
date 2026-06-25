@@ -33,7 +33,7 @@
       "text": "[What They Look Like & Where to Place Them]",
       "contentMedia": {
         "type": "video",
-        "src": "/Assets/Module 1/Chapter 4/Segment 1/1.4.1 What They Look Like & Where to Place Them.mov"
+        "src": "/Assets/Module 1/Chapter 4/Segment 1/1.4.1 What They Look Like & Where to Place Them.mp4"
       }
     },
     {
@@ -50,8 +50,8 @@
       "contentMedia": {
         "type": "video",
         "src": [
-          "/Assets/Module 1/Chapter 4/Segment 2/1.4.2.A Local vs. Interconnected Systems.mov",
-          "/Assets/Module 1/Chapter 4/Segment 2/1.4.2.B Local vs. Interconnected Systems.mov"
+          "/Assets/Module 1/Chapter 4/Segment 2/1.4.2.A Local vs. Interconnected Systems.mp4",
+          "/Assets/Module 1/Chapter 4/Segment 2/1.4.2.B Local vs. Interconnected Systems.mp4"
         ]
       }
     },
@@ -80,7 +80,7 @@
       "text": "[Testing & Monitoring Requirements]",
       "contentMedia": {
         "type": "video",
-        "src": "/Assets/Module 1/Chapter 4/Segment 4/1.4.4 Testing & Monitoring Requirements.mov"
+        "src": "/Assets/Module 1/Chapter 4/Segment 4/1.4.4 Testing & Monitoring Requirements.mp4"
       }
     },
     {
@@ -96,7 +96,7 @@
       "text": "[Showing Detectors to Inspectors]",
       "contentMedia": {
         "type": "video",
-        "src": "/Assets/Module 1/Chapter 4/Segment 5/1.4.5 Showing Detectors to Inspectors.mov"
+        "src": "/Assets/Module 1/Chapter 4/Segment 5/1.4.5 Showing Detectors to Inspectors.mp4"
       }
     },
     {

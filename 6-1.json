@@ -21,7 +21,7 @@
       "text": "[Intro]",      
       "contentMedia": {
       "type": "video",
-        "src": ["/Assets/Module 6/Chapter 1/Segment 1/6.1.1 Accessibility Intro.mov","/Assets/Module 6/Chapter 1/Segment 1/6.1.1 (Universal Accessibility Intro) Video 2.mov","/Assets/Module 6/Chapter 1/Segment 1/6.1.1 (Universal Accessibility Intro) Video 3.mov"]
+        "src": ["/Assets/Module 6/Chapter 1/Segment 1/6.1.1 Accessibility Intro.mp4","/Assets/Module 6/Chapter 1/Segment 1/6.1.1 (Universal Accessibility Intro) Video 2.mp4","/Assets/Module 6/Chapter 1/Segment 1/6.1.1 (Universal Accessibility Intro) Video 3.mp4"]
       }
     },
     {
@@ -53,7 +53,7 @@
       "text": "[Accessible Bathroom]",
       "contentMedia": {
         "type": "video",
-        "src": ["/Assets/Module 6/Chapter 1/Segment 3/6.1.3.A Accessible Bathroom.mov","/Assets/Module 6/Chapter 1/Segment 3/6.1.3.B Accessible Bathroom.mov","/Assets/Module 6/Chapter 1/Segment 3/6.1.3 (Accessible Bathroom) Video 3.mov"]
+        "src": ["/Assets/Module 6/Chapter 1/Segment 3/6.1.3.A Accessible Bathroom.mp4","/Assets/Module 6/Chapter 1/Segment 3/6.1.3.B Accessible Bathroom.mp4","/Assets/Module 6/Chapter 1/Segment 3/6.1.3 (Accessible Bathroom) Video 3.mp4"]
       }
     },
     {
@@ -69,7 +69,7 @@
       "text": "[Accessible Bedroom]",
       "contentMedia": {
         "type": "video",
-        "src": "/Assets/Module 6/Chapter 1/Segment 4/6.1.4 Accessible Bedroom.mov"
+        "src": "/Assets/Module 6/Chapter 1/Segment 4/6.1.4 Accessible Bedroom.mp4"
       }
     },
     {
@@ -85,7 +85,7 @@
       "text": "[Accessible Common Spaces]",
       "contentMedia": {
         "type": "video",
-        "src": "/Assets/Module 6/Chapter 1/Segment 5/6.1.5 Accessible Common Spaces.mov"
+        "src": "/Assets/Module 6/Chapter 1/Segment 5/6.1.5 Accessible Common Spaces.mp4"
       }
     },
     {
@@ -101,7 +101,7 @@
       "text": "[Parking Considerations]",
       "contentMedia": {
         "type": "video",
-        "src": "/Assets/Module 6/Chapter 1/Segment 6/6.1.6 Parking Considerations.mov"
+        "src": "/Assets/Module 6/Chapter 1/Segment 6/6.1.6 Parking Considerations.mp4"
       }
     },
     {
@@ -147,7 +147,7 @@
       "content": "[Closing]",
       "contentMedia": {
       "type": "video",
-        "src": "/Assets/Module 6/Chapter 1/Segment 9/6.1.9 Outro.mov"
+        "src": "/Assets/Module 6/Chapter 1/Segment 9/6.1.9 Outro.mp4"
       }
     }
   ]

@@ -1476,6 +1476,63 @@ initStorage(){
       return m ? { title:m[1], body:(m[2]||'').trimStart() } : { title:'Narration', body:text||'' };
     }
 
+    // Resize the active popup so the media (video/image) exactly fills the
+    // content box — no black bars top/bottom or sides. Called once the media
+    // reports its natural dimensions and the window is at its resting size.
+    fitWindowToMedia(){
+      if (!this.innerWindow || !this.innerWindow.classList.contains('active')) return;
+      const media = this.innerWindow.querySelector('.mediaArea');
+      if (!media) return; // subs-only segment: nothing to fit
+      const mediaEl = media.querySelector('video') || media.querySelector('img');
+      if (!mediaEl) return;
+
+      const mw = mediaEl.videoWidth || mediaEl.naturalWidth || 0;
+      const mh = mediaEl.videoHeight || mediaEl.naturalHeight || 0;
+      if (!mw || !mh) return; // not ready yet
+      const ar = mw / mh;
+
+      const vw = window.innerWidth;
+      const vh = window.innerHeight;
+      const maxW = vw * 0.92;
+      const maxH = vh * 0.88;
+
+      // Measure the non-media chrome (header + audio controls + paddings)
+      const header = this.innerWindow.querySelector('header');
+      const audioUI = this.innerWindow.querySelector('.audio-ui');
+      const headerH = header ? header.offsetHeight : 44;
+      const audioH = audioUI ? audioUI.offsetHeight : 0;
+      const viewerPadV = 24;            // .viewer padding top+bottom (12+12)
+      const viewerPadH = 24;            // .viewer padding left+right (12+12)
+      const gap = audioH ? 12 : 0;      // .viewer gap between media and controls
+      const chromeH = headerH + audioH + viewerPadV + gap;
+
+      // Target width = current width (already capped), then derive height from AR
+      let winW = Math.min(maxW, Math.max(360, this.innerWindow.offsetWidth || 760));
+      let innerMediaW = winW - viewerPadH;
+      let innerMediaH = innerMediaW / ar;
+      let winH = innerMediaH + chromeH;
+
+      // If too tall, drive sizing from height instead
+      if (winH > maxH) {
+        winH = maxH;
+        innerMediaH = winH - chromeH;
+        innerMediaW = innerMediaH * ar;
+        winW = innerMediaW + viewerPadH;
+      }
+      // Final width clamp
+      if (winW > maxW) {
+        winW = maxW;
+        innerMediaW = winW - viewerPadH;
+        innerMediaH = innerMediaW / ar;
+        winH = innerMediaH + chromeH;
+      }
+
+      this.innerWindow.style.width = Math.round(winW) + 'px';
+      this.innerWindow.style.height = Math.round(winH) + 'px';
+      this.innerWindow.style.left = Math.round((vw - winW) / 2) + 'px';
+      this.innerWindow.style.top = Math.round((vh - winH) / 2) + 'px';
+    }
+
     openFor(button){
       
       
@@ -1522,6 +1579,7 @@ const id = button.id;
       this.viewer.replaceChildren();
       this.viewerTitle.textContent = title || 'Narration';
       this.innerWindow.classList.remove('small','large','animating');
+      this.seg.windowReady = false;
 
       const hasVideo = h.video || (h.contentMedia && h.contentMedia.type === 'video');
       const hasImage = h.contentMedia && h.contentMedia.type === 'image';
@@ -1721,6 +1779,16 @@ const id = button.id;
           media.appendChild(captionEl);
         }
         this.viewer.appendChild(media);
+
+        // When the media reports its real dimensions, size the window to its
+        // aspect ratio so there's no wasted space around it. Guarded by
+        // windowReady so it only fires after the open animation settles.
+        const mediaEl = media.querySelector('video') || media.querySelector('img');
+        if (mediaEl) {
+          const onReady = () => { if (this.seg.windowReady) this.fitWindowToMedia(); };
+          mediaEl.addEventListener('loadedmetadata', onReady);
+          mediaEl.addEventListener('load', onReady);
+        }
       } else {
         const wrap = el('div',{class:'subs-only', style:'flex:1;display:flex;align-items:center;justify-content:center;padding:20px;position:relative'});
         
@@ -1840,6 +1908,8 @@ const id = button.id;
         }
 
         this.wireAudioSegment(s, e, id);
+        this.seg.windowReady = true;
+        this.fitWindowToMedia();
         vlog('=== ANIMATION DEBUG END (no animation path) ===');
       } else {
         this.innerWindow.classList.add('active', sizeClass);
@@ -1912,6 +1982,10 @@ const id = button.id;
           setTimeout(() => {
             console.log('Animation complete! Starting audio/video now...');
             this.wireAudioSegment(s, e, id);
+            this.seg.windowReady = true;
+            // Media metadata may already be available (cached) — fit now;
+            // the loadedmetadata/load listeners will catch late-loading media.
+            this.fitWindowToMedia();
           }, delay);
         }, 100);
 

@@ -1283,73 +1283,98 @@ initStorage(){
       };
 
       const startSeg = ()=>{
-        this.audio.currentTime = startSec;
-        
+        // Make the element actually buffer audio data (not just metadata), so that
+        // seeking into the middle of the chapter .wav doesn't silently stall.
+        try { this.audio.preload = 'auto'; } catch(e){}
+
         // Apply playback speed if configured
         if (typeof AUDIO_SPEEDUP_ENABLED !== 'undefined' && AUDIO_SPEEDUP_ENABLED === true) {
-          const speedRate = typeof AUDIO_SPEEDUP_RATE !== 'undefined' ? AUDIO_SPEEDUP_RATE : 1.0;
-          this.audio.playbackRate = speedRate;
-          console.log(`⏩ Audio speed-up enabled: ${speedRate}x playback rate`);
+          this.audio.playbackRate = (typeof AUDIO_SPEEDUP_RATE !== 'undefined' ? AUDIO_SPEEDUP_RATE : 1.0);
         } else {
           this.audio.playbackRate = 1.0;
         }
-        
-        // ===== FOCUSED AUDIO DIAGNOSTIC =====
-        const AU = 'background:#7b2ff7;color:#fff;font-weight:700;padding:2px 6px;border-radius:4px;';
+
+        // ===== THOROUGH AUDIO DIAGNOSTIC =====
+        const AU  = 'background:#7b2ff7;color:#fff;font-weight:700;padding:2px 6px;border-radius:4px;';
+        const OK  = 'background:#0a7d33;color:#fff;font-weight:700;padding:2px 6px;border-radius:4px;';
+        const BAD = 'background:#b00020;color:#fff;font-weight:700;padding:2px 6px;border-radius:4px;';
         const NET = ['EMPTY','IDLE','LOADING','NO_SOURCE'];
-        const RDY = ['HAVE_NOTHING','HAVE_METADATA','HAVE_CURRENT','HAVE_FUTURE','HAVE_ENOUGH'];
-        console.log('%c🔊 AUDIO try', AU, {
-          src: this.audio.currentSrc || this.audio.src || '(none)',
-          networkState: NET[this.audio.networkState] || this.audio.networkState,
-          readyState: RDY[this.audio.readyState] || this.audio.readyState,
+        const RDY = ['HAVE_NOTHING','HAVE_METADATA','HAVE_CURRENT_DATA','HAVE_FUTURE_DATA','HAVE_ENOUGH_DATA'];
+        const bufRanges = (a) => { const o=[]; try{ for(let i=0;i<a.buffered.length;i++) o.push([+a.buffered.start(i).toFixed(2),+a.buffered.end(i).toFixed(2)]); }catch(e){} return o; };
+        const snap = () => ({
+          src: (this.audio.currentSrc || this.audio.src || '(none)').split('/').pop(),
+          net: NET[this.audio.networkState] ?? this.audio.networkState,
+          ready: RDY[this.audio.readyState] ?? this.audio.readyState,
           mediaError: this.audio.error ? this.audio.error.code : null,
-          paused: this.audio.paused,
-          muted: this.audio.muted,
-          volume: this.audio.volume,
-          duration: this.audio.duration,
-          seekTo: this.audio.currentTime,
-          segWindow: [this.seg.start, this.seg.end]
+          paused: this.audio.paused, seeking: this.audio.seeking,
+          muted: this.audio.muted, volume: this.audio.volume,
+          duration: +(this.audio.duration||0).toFixed(2),
+          currentTime: +(this.audio.currentTime||0).toFixed(2),
+          buffered: bufRanges(this.audio),
+          wantWindow: [this.seg.start, this.seg.end]
         });
 
-        this.audio.play().then(()=>{
-          console.log('%c🔊 AUDIO playing ✅', 'background:#0a7d33;color:#fff;font-weight:700;padding:2px 6px;border-radius:4px;');
-          // Handle video playback - check for crossfade system first
-          if (this.seg.crossfadeState && this.seg.crossfadeState.activeVideo) {
-            // Crossfade system active - play the currently active video
-            const activeVid = this.seg.crossfadeState.activeVideo;
-            
-            // Apply same speed to video if speed-up is enabled
-            if (typeof AUDIO_SPEEDUP_ENABLED !== 'undefined' && AUDIO_SPEEDUP_ENABLED === true) {
-              const speedRate = typeof AUDIO_SPEEDUP_RATE !== 'undefined' ? AUDIO_SPEEDUP_RATE : 1.0;
-              activeVid.playbackRate = speedRate;
+        console.log('%c\ud83d\udd0a AUDIO try', AU, snap());
+
+        const target = startSec;
+
+        // Watchdog: 700ms after play() resolves, confirm currentTime is actually moving.
+        // This catches the case where play() resolves but no sound comes out.
+        const watchdog = () => {
+          const t0 = this.audio.currentTime;
+          setTimeout(() => {
+            if (!this.seg.active || this.audio.paused) return;
+            const moved = this.audio.currentTime - t0;
+            if (moved < 0.05) {
+              console.error('%c\ud83d\udd0a AUDIO STALLED \u274c play() resolved but currentTime is NOT advancing', BAD, snap());
+              console.error('   \u2192 The .wav likely can\'t be seeked: if the host (Cloudflare Worker) doesn\'t serve HTTP range requests, the browser can\'t jump to ' + target.toFixed(2) + 's. Fix: serve the audio with range support, or pre-buffer.');
+              if (status) status.textContent = 'Audio stalled \u2014 see console';
+            } else {
+              console.log('%c\ud83d\udd0a AUDIO confirmed advancing \u2705 ' + this.audio.currentTime.toFixed(2) + 's', OK);
             }
-            activeVid.play().catch(()=>{}); 
-          } else if (this.seg.currentVideo) {
-            // Regular single video or multi-video system
-            // Apply same speed to video if speed-up is enabled
-            if (typeof AUDIO_SPEEDUP_ENABLED !== 'undefined' && AUDIO_SPEEDUP_ENABLED === true) {
-              const speedRate = typeof AUDIO_SPEEDUP_RATE !== 'undefined' ? AUDIO_SPEEDUP_RATE : 1.0;
-              this.seg.currentVideo.playbackRate = speedRate;
+          }, 700);
+        };
+
+        const beginPlay = () => {
+          this.audio.play().then(()=>{
+            console.log('%c\ud83d\udd0a AUDIO play() resolved', OK, '@ ' + this.audio.currentTime.toFixed(2) + 's, ready=' + (RDY[this.audio.readyState]||this.audio.readyState));
+            if (this.seg.crossfadeState && this.seg.crossfadeState.activeVideo) {
+              this.seg.crossfadeState.activeVideo.play().catch(()=>{});
+            } else if (this.seg.currentVideo) {
+              this.seg.currentVideo.play().catch(()=>{});
             }
-            this.seg.currentVideo.play().catch(()=>{}); 
-          }
-          if (playPause) playPause.textContent='⏸';
-          if (status) status.textContent='Playing';
-          cancelAnimationFrame(this.seg.rafId);
-          this.seg.rafId = requestAnimationFrame(syncUI);
-        }).catch((err)=>{
-          // Reveal WHY audio didn't start instead of hiding it.
-          console.error('%c🔊 AUDIO BLOCKED ❌', 'background:#b00020;color:#fff;font-weight:700;padding:2px 6px;border-radius:4px;',
-            err && err.name, '—', err && err.message);
-          if (err && err.name === 'NotAllowedError') {
-            console.error('   → Browser autoplay policy: audio needs a user click. (Video is muted, so it was allowed; audio is not.)');
-          } else if (this.audio.error) {
-            console.error('   → Media error code', this.audio.error.code, '— the audio file failed to load/decode. Check the .wav URL/format.');
-          } else {
-            console.error('   → Unexpected. Full error object:', err);
-          }
-          if (status) status.textContent='Tap Play to start audio';
-        });
+            if (playPause) playPause.textContent='\u23f8';
+            if (status) status.textContent='Playing';
+            cancelAnimationFrame(this.seg.rafId);
+            this.seg.rafId = requestAnimationFrame(syncUI);
+            watchdog();
+          }).catch((err)=>{
+            console.error('%c\ud83d\udd0a AUDIO BLOCKED \u274c', BAD, (err&&err.name), '\u2014', (err&&err.message), '\n', snap());
+            if (err && err.name === 'NotAllowedError') {
+              console.error('   \u2192 Autoplay policy: audio needs a user click first (muted video is allowed, audio is not).');
+              if (status) status.textContent='\u25b6 Click play to start audio';
+            } else if (this.audio.error) {
+              console.error('   \u2192 MediaError code', this.audio.error.code, '(1 aborted, 2 network, 3 decode, 4 not-found/unsupported)');
+              if (status) status.textContent='Audio failed to load \u2014 see console';
+            } else {
+              console.error('   \u2192 Unexpected:', err);
+              if (status) status.textContent='Tap Play to start audio';
+            }
+          });
+        };
+
+        // THE FIX: seek first, wait for the seek to actually land, THEN play.
+        // Playing before the seek completes is why play() resolved yet produced no
+        // sound and the timeline never moved on segments that start mid-file.
+        if (Math.abs(this.audio.currentTime - target) < 0.25 && this.audio.readyState >= 2) {
+          beginPlay();
+        } else {
+          let fired = false;
+          const go = () => { if (fired) return; fired = true; this.audio.removeEventListener('seeked', go); beginPlay(); };
+          this.audio.addEventListener('seeked', go, { once: true });
+          setTimeout(go, 1500); // fallback if 'seeked' never fires (e.g. no range support)
+          try { this.audio.currentTime = target; } catch(e){ go(); }
+        }
       };
 
       this.audio.ontimeupdate = ()=>{

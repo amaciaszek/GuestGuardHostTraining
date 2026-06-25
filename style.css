@@ -976,6 +976,7 @@ input[type="file"] {
 /* HIDE SCROLLBAR for narration-only content */
 .subs-only::-webkit-scrollbar {
   display: none;
+}
 
 /* ============================================
    RESPONSIVE - ASPECT RATIO BASED
@@ -1168,4 +1169,133 @@ input[type="file"] {
   .viewer {
     max-height: 50vh;
   }
+}
+
+/* ============================================================
+   VISUAL POLISH (v3) — decorative overrides only.
+   Appended last so it wins the cascade. Safe to delete this
+   whole block to revert to the previous look. Does NOT touch
+   grid/stage/window geometry (all JS-driven), only colors,
+   spacing, type, borders, and shadows.
+   ============================================================ */
+
+/* Softer, less flat backdrop */
+body {
+  background:
+    radial-gradient(1200px 600px at 50% -10%, #16202b 0%, transparent 60%),
+    linear-gradient(180deg, #0c1116 0%, #090b0f 100%);
+}
+
+/* Frame: cleaner edge + deeper, softer shadow */
+.frame {
+  border: 1px solid rgba(255,255,255,.10);
+  border-radius: 22px;
+  box-shadow:
+    0 30px 80px rgba(0,0,0,.6),
+    0 2px 0 rgba(255,255,255,.04) inset;
+  background: linear-gradient(180deg, #121821, #0e131a);
+}
+
+/* Title bar: accent gradient wash + crisper type */
+.titlebar {
+  background: linear-gradient(90deg, rgba(0,224,255,.10), rgba(124,246,201,.04) 40%, transparent);
+  border-bottom: 1px solid rgba(0,224,255,.18);
+  font-size: 15px;
+  font-weight: 700;
+  letter-spacing: .3px;
+  color: #eaf6ff;
+}
+
+/* Sidebar header: subtle accent bar */
+.sidebar-header {
+  background: linear-gradient(90deg, rgba(0,224,255,.14), rgba(0,224,255,.04));
+  letter-spacing: .6px;
+  text-transform: uppercase;
+}
+
+/* Sidebar states: smoother current/hover */
+.segment-item.current,
+.chapter-header.has-current {
+  background: linear-gradient(90deg, rgba(0,224,255,.22), rgba(0,224,255,.06));
+}
+.module-header { border-radius: 6px; }
+
+/* Narration / content window: glassier, brighter accent */
+.inner-window {
+  border: 1px solid rgba(0,224,255,.22);
+  border-radius: 16px;
+  box-shadow: 0 24px 70px rgba(0,0,0,.75), 0 0 0 1px rgba(0,224,255,.06) inset;
+}
+.inner-window header {
+  background: linear-gradient(90deg, #0f1b22, #12222b);
+  border-bottom: 1px solid rgba(0,224,255,.20);
+}
+#viewerTitle { font-weight: 700; letter-spacing: .3px; }
+
+/* Audio transport buttons: round, tactile, accent on hover */
+.audio-ui .btn,
+#playPause, #replay {
+  min-width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  background: #141b22;
+  border: 1px solid rgba(255,255,255,.16);
+  font-size: 18px;
+  transition: transform .12s ease, background .2s ease, border-color .2s ease, box-shadow .2s ease;
+}
+.audio-ui .btn:hover,
+#playPause:hover, #replay:hover {
+  background: linear-gradient(135deg, #00e0ff, #0099cc);
+  color: #002028;
+  border-color: transparent;
+  transform: translateY(-1px);
+  box-shadow: 0 6px 18px rgba(0,224,255,.35);
+}
+
+/* Progress bar: taller, rounder, soft glow */
+.bar {
+  height: 16px;
+  border-radius: 999px;
+  background: rgba(255,255,255,.07);
+  border: 1px solid rgba(255,255,255,.14);
+}
+.fill {
+  background: linear-gradient(90deg, #00e0ff, #7cf6c9);
+  box-shadow: 0 0 14px rgba(0,224,255,.6);
+}
+.time { color: #cfe9f2; }
+.biglabel { color: #eaf6ff; letter-spacing: .3px; }
+
+/* Captions: a touch more legible, softer corners */
+.caption {
+  background: rgba(8,12,16,.9);
+  border: 1px solid rgba(255,255,255,.08);
+  border-radius: 12px;
+  font-size: 17px;
+  line-height: 1.55;
+  box-shadow: 0 6px 18px rgba(0,0,0,.55);
+}
+
+/* Primary "Next" action: clearer affordance */
+.next-btn {
+  background: linear-gradient(135deg, #00e0ff, #0aa);
+  box-shadow: 0 6px 18px rgba(0,224,255,.3);
+  letter-spacing: .3px;
+}
+.next-btn:hover {
+  background: linear-gradient(135deg, #28e6ff, #00b3a0);
+  transform: translateY(-1px);
+}
+
+/* Progress side panel + its toggle: match the accent system */
+#toggleProgressBtn {
+  border-radius: 12px;
+  box-shadow: 0 6px 18px rgba(0,224,255,.32);
+  letter-spacing: .3px;
+}
+
+/* The stalled-video fallback note, styled to match */
+.video-error-note {
+  font-family: ui-monospace, Menlo, Consolas, monospace;
+  letter-spacing: .3px;
 }

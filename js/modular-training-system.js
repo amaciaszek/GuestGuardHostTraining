@@ -1282,7 +1282,32 @@ initStorage(){
         this.seg.rafId = requestAnimationFrame(syncUI);
       };
 
+      // ===== Big "Click to Play" overlay =====
+      // Shown when the browser blocks autoplay (or before any user gesture). The
+      // click both satisfies the autoplay policy and starts playback cleanly,
+      // instead of a silent autoplay attempt that resets the audio element.
+      const hidePlayPrompt = () => {
+        const ov = this.innerWindow.querySelector('#bigPlayOverlay');
+        if (ov) ov.remove();
+      };
+      const showPlayPrompt = (onPlay) => {
+        hidePlayPrompt();
+        const overlay = el('div', { id:'bigPlayOverlay' });
+        overlay.style.cssText = 'position:absolute;inset:0;z-index:60;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;background:rgba(2,8,12,.6);backdrop-filter:blur(2px);cursor:pointer;border-radius:inherit;';
+        const btn = el('div', { 'role':'button', 'aria-label':'Play' });
+        btn.style.cssText = 'width:104px;height:104px;border-radius:50%;display:flex;align-items:center;justify-content:center;background:linear-gradient(135deg,#00e0ff,#0099cc);color:#001b22;font-size:46px;padding-left:8px;box-shadow:0 12px 34px rgba(0,224,255,.55);animation:bigPlayPulse 1.6s ease-in-out infinite;';
+        btn.textContent = '▶';
+        const label = el('div', {}, 'Click to play');
+        label.style.cssText = 'color:#dffaff;font:700 14px ui-monospace,Menlo,Consolas,monospace;letter-spacing:.6px;text-shadow:0 1px 4px rgba(0,0,0,.6);';
+        overlay.appendChild(btn);
+        overlay.appendChild(label);
+        overlay.addEventListener('click', (e)=>{ e.stopPropagation(); hidePlayPrompt(); onPlay(); });
+        this.innerWindow.appendChild(overlay);
+        if (status) status.textContent = 'Click ▶ to play';
+      };
+
       const startSeg = ()=>{
+        hidePlayPrompt();
         // Make the element actually buffer audio data (not just metadata), so that
         // seeking into the middle of the chapter .wav doesn't silently stall.
         try { this.audio.preload = 'auto'; } catch(e){}
@@ -1326,9 +1351,14 @@ initStorage(){
             if (!this.seg.active || this.audio.paused) return;
             const moved = this.audio.currentTime - t0;
             if (moved < 0.05) {
-              console.error('%c\ud83d\udd0a AUDIO STALLED \u274c play() resolved but currentTime is NOT advancing', BAD, snap());
-              console.error('   \u2192 The .wav likely can\'t be seeked: if the host (Cloudflare Worker) doesn\'t serve HTTP range requests, the browser can\'t jump to ' + target.toFixed(2) + 's. Fix: serve the audio with range support, or pre-buffer.');
-              if (status) status.textContent = 'Audio stalled \u2014 see console';
+              console.warn('%c\ud83d\udd0a AUDIO stalled (recovering)', BAD, 'play() resolved but time isn\'t advancing — re-seeking once.', snap());
+              // Recover: nudge the seek again now that data is loaded; if still stuck, offer the button.
+              try { this.audio.currentTime = this.seg.start; this.audio.play().catch(()=>{}); } catch(e){}
+              setTimeout(() => {
+                if (this.seg.active && !this.audio.paused && (this.audio.currentTime - this.seg.start) < 0.05) {
+                  showPlayPrompt(() => startSeg());
+                }
+              }, 500);
             } else {
               console.log('%c\ud83d\udd0a AUDIO confirmed advancing \u2705 ' + this.audio.currentTime.toFixed(2) + 's', OK);
             }
@@ -1337,6 +1367,8 @@ initStorage(){
 
         const beginPlay = () => {
           this.audio.play().then(()=>{
+            this._audioUnlocked = true;
+            hidePlayPrompt();
             console.log('%c\ud83d\udd0a AUDIO play() resolved', OK, '@ ' + this.audio.currentTime.toFixed(2) + 's, ready=' + (RDY[this.audio.readyState]||this.audio.readyState));
             if (this.seg.crossfadeState && this.seg.crossfadeState.activeVideo) {
               this.seg.crossfadeState.activeVideo.play().catch(()=>{});
@@ -1349,16 +1381,17 @@ initStorage(){
             this.seg.rafId = requestAnimationFrame(syncUI);
             watchdog();
           }).catch((err)=>{
-            console.error('%c\ud83d\udd0a AUDIO BLOCKED \u274c', BAD, (err&&err.name), '\u2014', (err&&err.message), '\n', snap());
             if (err && err.name === 'NotAllowedError') {
-              console.error('   \u2192 Autoplay policy: audio needs a user click first (muted video is allowed, audio is not).');
-              if (status) status.textContent='\u25b6 Click play to start audio';
+              // Don't retry blindly (that resets the audio element). Ask for a click.
+              console.log('%c\ud83d\udd0a AUDIO needs a click', AU, '\u2014 showing Play button (autoplay blocked until user interacts).');
+              showPlayPrompt(() => startSeg());
             } else if (this.audio.error) {
+              console.error('%c\ud83d\udd0a AUDIO BLOCKED \u274c', BAD, (err&&err.name), '\u2014', (err&&err.message), '\n', snap());
               console.error('   \u2192 MediaError code', this.audio.error.code, '(1 aborted, 2 network, 3 decode, 4 not-found/unsupported)');
               if (status) status.textContent='Audio failed to load \u2014 see console';
             } else {
-              console.error('   \u2192 Unexpected:', err);
-              if (status) status.textContent='Tap Play to start audio';
+              console.error('%c\ud83d\udd0a AUDIO BLOCKED \u274c', BAD, (err&&err.name), '\u2014', (err&&err.message), '\n', snap());
+              showPlayPrompt(() => startSeg());
             }
           });
         };
@@ -1372,7 +1405,7 @@ initStorage(){
           let fired = false;
           const go = () => { if (fired) return; fired = true; this.audio.removeEventListener('seeked', go); beginPlay(); };
           this.audio.addEventListener('seeked', go, { once: true });
-          setTimeout(go, 1500); // fallback if 'seeked' never fires (e.g. no range support)
+          setTimeout(go, 2000); // fallback if 'seeked' never fires
           try { this.audio.currentTime = target; } catch(e){ go(); }
         }
       };
@@ -1426,7 +1459,16 @@ initStorage(){
       }
       if (replay) replay.onclick = ()=> startSeg();
       if (closeBtn) closeBtn.onclick = ()=>this.closeViewer();
-      startSeg();
+      // Auto-start only if the browser will allow audio (i.e. the user has already
+      // interacted this session). On a cold resume with no gesture yet, show the big
+      // Play button instead of a silent autoplay that resets the audio element.
+      const hasGesture = !!((navigator.userActivation && navigator.userActivation.hasBeenActive) || this._audioUnlocked);
+      if (hasGesture) {
+        startSeg();
+      } else {
+        showPlayPrompt(() => startSeg());
+        console.log('%c\ud83d\udd0a Waiting for user click before playing audio (autoplay policy).', 'background:#7b2ff7;color:#fff;font-weight:700;padding:2px 6px;border-radius:4px;');
+      }
     }
 
     getTitleAndBody(text){

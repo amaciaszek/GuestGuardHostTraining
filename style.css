@@ -1299,3 +1299,11 @@ body {
   font-family: ui-monospace, Menlo, Consolas, monospace;
   letter-spacing: .3px;
 }
+
+/* Big "Click to play" overlay button pulse */
+@keyframes bigPlayPulse {
+  0%   { transform: scale(1);    box-shadow: 0 12px 34px rgba(0,224,255,.55), 0 0 0 0 rgba(0,224,255,.45); }
+  70%  { transform: scale(1.06); box-shadow: 0 12px 34px rgba(0,224,255,.55), 0 0 0 22px rgba(0,224,255,0); }
+  100% { transform: scale(1);    box-shadow: 0 12px 34px rgba(0,224,255,.55), 0 0 0 0 rgba(0,224,255,0); }
+}
+#bigPlayOverlay > div[role="button"]:hover { filter: brightness(1.08); }

@@ -1777,30 +1777,38 @@ const id = button.id;
       let buttonCenterY;
 
       if (unsafeButton) {
-        console.log('[openFor] Using stage center as animation start (button rect not reliable).');
-        buttonCenterX = stageWidth / 2;
-        buttonCenterY = stageHeight / 2;
+        console.log('[openFor] Using viewport center as animation start (button rect not reliable).');
+        buttonCenterX = window.innerWidth / 2;
+        buttonCenterY = window.innerHeight / 2;
       } else {
-        buttonCenterX = rawButtonRect.left + rawButtonRect.width / 2 - rawStageRect.left;
-        buttonCenterY = rawButtonRect.top + rawButtonRect.height / 2 - rawStageRect.top;
+        // Window is position:fixed, so use viewport-relative coordinates
+        buttonCenterX = rawButtonRect.left + rawButtonRect.width / 2;
+        buttonCenterY = rawButtonRect.top + rawButtonRect.height / 2;
       }
 
       vlog('Button center relative to stage:', { x: buttonCenterX, y: buttonCenterY });
 
       let finalWidth, finalHeight, finalTop, finalLeft;
 
+      const vw = window.innerWidth;
+      const vh = window.innerHeight;
+
       if (sizeClass === 'large') {
-        finalWidth = stageWidth * 0.84;
-        finalHeight = stageHeight * 0.84;
-        finalTop = stageHeight * 0.08;
-        finalLeft = stageWidth * 0.08;
+        // Video / image segment: a compact, centered window sized to the
+        // media (not stretched across the screen). object-fit:contain keeps
+        // the media tidy; the centered caption sits at the bottom.
+        finalWidth = Math.min(760, vw * 0.90);
+        finalHeight = Math.min(560, vh * 0.82);
       } else {
-        // Small window (narration only) - use original positioning logic but bigger size
-        finalWidth = Math.min(600, stageWidth * 0.52);  // Increased from 520px/0.46
-        finalHeight = stageHeight * 0.65;                // Increased from 0.60
-        finalTop = stageHeight * 0.20;                   // Adjusted slightly from 0.34 to center better
-        finalLeft = stageWidth * 0.24;                   // Centered: 0.52 width at 0.24 left
+        // Audio-only / text segment: a smaller centered card sized for
+        // comfortable reading of the centered narration text.
+        finalWidth = Math.min(580, vw * 0.88);
+        finalHeight = Math.min(360, vh * 0.58);
       }
+
+      // Always center the window in the viewport
+      finalLeft = (vw - finalWidth) / 2;
+      finalTop = (vh - finalHeight) / 2;
 
       vlog('Calculated final dimensions:', {
         width: finalWidth + 'px',

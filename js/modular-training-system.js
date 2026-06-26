@@ -1627,7 +1627,7 @@ initStorage(){
       const chromeH = headerH + audioH + viewerPadV + gap;
 
       // Target width = current width (already capped), then derive height from AR
-      let winW = Math.min(maxW, Math.max(360, this.innerWindow.offsetWidth || 760));
+      let winW = Math.min(maxW, Math.max(360, this.innerWindow.offsetWidth || 1040));
       let innerMediaW = winW - viewerPadH;
       let innerMediaH = innerMediaW / ar;
       let winH = innerMediaH + chromeH;
@@ -1987,8 +1987,8 @@ const id = button.id;
         // Video / image segment: a compact, centered window sized to the
         // media (not stretched across the screen). object-fit:contain keeps
         // the media tidy; the centered caption sits at the bottom.
-        finalWidth = Math.min(760, vw * 0.90);
-        finalHeight = Math.min(560, vh * 0.82);
+        finalWidth = Math.min(1040, vw * 0.92);
+        finalHeight = Math.min(720, vh * 0.86);
       } else {
         // Audio-only / text segment: a smaller centered card sized for
         // comfortable reading of the centered narration text.

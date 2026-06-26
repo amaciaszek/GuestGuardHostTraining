@@ -290,8 +290,15 @@ body {
   background: #22c55e;
 }
 
-.segment-item.completed .segment-badge::after {
+/* Checkmark goes at the END of the segment name, not inside the number bubble.
+   .segment-item is a flex row, so this ::after sits after the name text. */
+.segment-item.completed::after {
   content: '✓';
+  margin-left: auto;
+  padding-left: 8px;
+  color: #22c55e;
+  font-weight: 700;
+  flex-shrink: 0;
 }
 
 .segment-item.current .segment-badge {

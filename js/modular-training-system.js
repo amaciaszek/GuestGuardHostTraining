@@ -164,6 +164,48 @@ class ModularTrainingSystem {
 
       this.init();
       this.setupVisibilityHandler();
+      this.setupResizeHandler();
+    }
+
+    setupResizeHandler(){
+      let t = null;
+      const onResize = () => {
+        clearTimeout(t);
+        t = setTimeout(() => this.repositionActiveWindow(), 120);
+      };
+      window.addEventListener('resize', onResize);
+      window.addEventListener('orientationchange', onResize);
+    }
+
+    // Re-center / re-fit the open popup after a viewport change (rotate, resize,
+    // iOS toolbar show/hide). Without this the window keeps its old pixel
+    // coordinates and lands in an odd spot. In portrait the CSS !important rules
+    // center it, so this is effectively a no-op there and won't fight them.
+    repositionActiveWindow(){
+      if (!this.innerWindow || !this.innerWindow.classList.contains('active')) return;
+      if (!this.seg.windowReady) return; // don't disturb the open animation
+
+      // Clear any leftover inline transform from the zoom animation so centering
+      // via top/left is accurate (portrait CSS still overrides with !important).
+      this.innerWindow.style.transform = '';
+
+      const media = this.innerWindow.querySelector('.mediaArea');
+      const mediaEl = media && (media.querySelector('video') || media.querySelector('img'));
+      const ready = mediaEl && ((mediaEl.videoWidth||mediaEl.naturalWidth) > 0);
+
+      if (ready) {
+        this.fitWindowToMedia();
+        return;
+      }
+
+      // Subs-only (audio/text) window: recompute the centered card size.
+      const vw = window.innerWidth, vh = window.innerHeight;
+      const w = Math.min(580, vw * 0.88);
+      const h = Math.min(360, vh * 0.58);
+      this.innerWindow.style.width = Math.round(w) + 'px';
+      this.innerWindow.style.height = Math.round(h) + 'px';
+      this.innerWindow.style.left = Math.round((vw - w) / 2) + 'px';
+      this.innerWindow.style.top = Math.round((vh - h) / 2) + 'px';
     }
 
     setupVisibilityHandler(){
@@ -852,6 +894,24 @@ initStorage(){
       if (status) status.textContent='Paused';
     }
 
+    // Hard-stop every audio/video source and invalidate any in-flight playback
+    // callbacks from a previous segment. Bumping _playGen makes stale async
+    // handlers (seek/watchdog/timeouts) abort instead of playing over the new
+    // segment — which is what caused overlapping audio.
+    stopAllPlayback(){
+      this._playGen = (this._playGen || 0) + 1;
+      try { if (this.seg.currentVideo) this.seg.currentVideo.pause(); } catch(e){}
+      try { if (this.seg.currentVideo2) this.seg.currentVideo2.pause(); } catch(e){}
+      try {
+        if (this.seg.crossfadeState && this.seg.crossfadeState.activeVideo) {
+          this.seg.crossfadeState.activeVideo.pause();
+        }
+      } catch(e){}
+      try { if (this.audio && !this.audio.paused) this.audio.pause(); } catch(e){}
+      try { cancelAnimationFrame(this.seg.rafId); } catch(e){}
+      this.seg.active = false;
+    }
+
     closeViewer(){
       this.innerWindow.style.opacity = '0';
       
@@ -1307,6 +1367,10 @@ initStorage(){
       };
 
       const startSeg = ()=>{
+        // Tag this playback attempt; if a newer segment starts, this token goes
+        // stale and all the async callbacks below bail out instead of overlapping.
+        const myGen = ++this._playGen;
+        const isStale = () => myGen !== this._playGen;
         hidePlayPrompt();
         // Make the element actually buffer audio data (not just metadata), so that
         // seeking into the middle of the chapter .wav doesn't silently stall.
@@ -1348,6 +1412,7 @@ initStorage(){
         const watchdog = () => {
           const t0 = this.audio.currentTime;
           setTimeout(() => {
+            if (isStale()) return;
             if (!this.seg.active || this.audio.paused) return;
             const moved = this.audio.currentTime - t0;
             if (moved < 0.05) {
@@ -1355,6 +1420,7 @@ initStorage(){
               // Recover: nudge the seek again now that data is loaded; if still stuck, offer the button.
               try { this.audio.currentTime = this.seg.start; this.audio.play().catch(()=>{}); } catch(e){}
               setTimeout(() => {
+                if (isStale()) return;
                 if (this.seg.active && !this.audio.paused && (this.audio.currentTime - this.seg.start) < 0.05) {
                   showPlayPrompt(() => startSeg());
                 }
@@ -1366,7 +1432,9 @@ initStorage(){
         };
 
         const beginPlay = () => {
+          if (isStale()) return;
           this.audio.play().then(()=>{
+            if (isStale()) { try { this.audio.pause(); } catch(e){} return; }
             this._audioUnlocked = true;
             hidePlayPrompt();
             console.log('%c\ud83d\udd0a AUDIO play() resolved', OK, '@ ' + this.audio.currentTime.toFixed(2) + 's, ready=' + (RDY[this.audio.readyState]||this.audio.readyState));
@@ -1417,9 +1485,10 @@ initStorage(){
         };
 
         const doSeekAndPlay = () => {
+          if (isStale()) return;
           if (Math.abs(this.audio.currentTime - target) < 0.25) { beginPlay(); return; }
           let fired = false;
-          const go = () => { if (fired) return; fired = true; this.audio.removeEventListener('seeked', go); beginPlay(); };
+          const go = () => { if (fired) return; fired = true; this.audio.removeEventListener('seeked', go); if (isStale()) return; beginPlay(); };
           this.audio.addEventListener('seeked', go, { once: true });
           setTimeout(go, 2500); // fallback if 'seeked' never fires
           try { this.audio.currentTime = target; } catch (e) { go(); }
@@ -1440,6 +1509,7 @@ initStorage(){
           const cleanup = () => events.forEach(ev => this.audio.removeEventListener(ev, onData));
           const onData = () => {
             if (started) return;
+            if (isStale()) { started = true; cleanup(); return; }
             if (targetReachable()) {
               started = true;
               cleanup();
@@ -1454,6 +1524,7 @@ initStorage(){
             if (started) return;
             started = true;
             cleanup();
+            if (isStale()) return;
             doSeekAndPlay();
           }, 4000);
         }
@@ -1617,6 +1688,8 @@ try {
       } catch(e){}
     
 const id = button.id;
+      // Kill any audio/video from the previous segment so they can't overlap.
+      this.stopAllPlayback();
       const h = (this.config.hotspots||[]).find(x=>x.id===id) || {};
       const s = tcToSeconds(h.tcStart, this.FPS);
       const e = tcToSeconds(h.tcEnd, this.FPS);

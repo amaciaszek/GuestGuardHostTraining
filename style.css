@@ -1001,11 +1001,13 @@ input[type="file"] {
 /* If height is 20% larger than width: aspect-ratio < 1/1.2 = 5/6 */
 @media (max-aspect-ratio: 5/6) {
   .frame {
+    width: 100%;
+    max-width: 100vw;
     grid-template-columns: 1fr;
-    grid-template-rows: auto 1fr 1fr;
-    height: 100vh;
-    min-height: 100vh;
-    max-height: 100vh;
+    grid-template-rows: auto auto 1fr; /* titlebar, stage (natural height), sidebar fills rest */
+    height: 100svh;
+    min-height: 100svh;
+    max-height: 100svh;
   }
   
   .titlebar {
@@ -1022,11 +1024,12 @@ input[type="file"] {
     background-size: contain;
     background-position: center;
     background-repeat: no-repeat;
-    align-self: center;
+    align-self: start;
     justify-self: center;
     width: 100%;
     height: auto;
-    max-height: 100%;
+    max-width: 100vw;
+    max-height: none;
   }
   
   .hotspot.circle {
@@ -1184,6 +1187,30 @@ input[type="file"] {
   .viewer {
     max-height: 84vh;
   }
+}
+
+/* Large desktop / widescreen - the 220px sidebar with 9-12px text is too small.
+   Widen it and bump the type so the chapter guide is comfortably readable. */
+@media (min-width: 1200px) and (orientation: landscape) {
+  :root { --sidebar-width: 300px; }
+
+  .sidebar-header { font-size: 15px; }
+  .module-header  { font-size: 15px; padding: 12px 12px; }
+  .chapter-header { font-size: 14px; padding: 11px 10px 11px 22px; }
+  .segment-item   { font-size: 13px; padding: 8px 10px 8px 34px; }
+  .segment-badge  { width: 20px; height: 20px; font-size: 11px; }
+  .module-expand-icon,
+  .chapter-expand-icon { width: 16px; height: 16px; font-size: 12px; }
+}
+
+@media (min-width: 1800px) and (orientation: landscape) {
+  :root { --sidebar-width: 360px; }
+
+  .sidebar-header { font-size: 18px; }
+  .module-header  { font-size: 18px; }
+  .chapter-header { font-size: 16px; }
+  .segment-item   { font-size: 15px; }
+  .segment-badge  { width: 24px; height: 24px; font-size: 13px; }
 }
 
 /* ============================================================

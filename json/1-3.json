@@ -1,7 +1,7 @@
 {
   "id": "fire_safety_fire_extinguishers",
   "title": "Fire Safety - Fire Extinguishers",
-  "audioFile": "/Assets/Module 1/Chapter 3/Audio/1.3 Fire Safety_Fire Extinguishers.m4a",
+  "audioFile": "/Assets/Module 1/Chapter 3/Audio/Segments/b1.m4a",
   "transcriptFile": "/Assets/Module 1/Chapter 3/Info/1.3 Fire Safety_Fire Extinguishers.txt",
   "backgroundImage": "/Assets/Module 1/Chapter 3/Background/1_3.jpg",
   "canvasDimensions": {
@@ -11,6 +11,7 @@
   "hotspots": [
     {
       "id": "b1",
+      "segmentAudioFile": "/Assets/Module 1/Chapter 3/Audio/Segments/b1.m4a",
       "tcStart": "00;00;00;00",
       "tcEnd": "00;00;09;06",
       "realLifeExamples": [],
@@ -22,6 +23,7 @@
     },
     {
       "id": "b2",
+      "segmentAudioFile": "/Assets/Module 1/Chapter 3/Audio/Segments/b2.m4a",
       "tcStart": "00;00;09;06",
       "tcEnd": "00;00;40;10",
       "realLifeExamples": [
@@ -46,6 +48,7 @@
     },
     {
       "id": "b3",
+      "segmentAudioFile": "/Assets/Module 1/Chapter 3/Audio/Segments/b3.m4a",
       "tcStart": "00;00;40;10",
       "tcEnd": "00;01;21;10",
       "realLifeExamples": [],
@@ -65,6 +68,7 @@
     },
     {
       "id": "b4",
+      "segmentAudioFile": "/Assets/Module 1/Chapter 3/Audio/Segments/b4.m4a",
       "tcStart": "00;01;21;10",
       "tcEnd": "00;01;40;18",
       "realLifeExamples": [],
@@ -81,6 +85,7 @@
     },
     {
       "id": "b5",
+      "segmentAudioFile": "/Assets/Module 1/Chapter 3/Audio/Segments/b5.m4a",
       "tcStart": "00;01;40;18",
       "tcEnd": "00;02;05;07",
       "realLifeExamples": [],
@@ -93,6 +98,7 @@
     },
     {
       "id": "b9",
+      "segmentAudioFile": "/Assets/Module 1/Chapter 3/Audio/Segments/b9.m4a",
       "tcStart": "00;02;05;07",
       "tcEnd": "00;02;25;26",
       "realLifeExamples": [],

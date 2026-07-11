@@ -12,8 +12,10 @@ class ModularTrainingSystem {
     // contained drops captions that straddle a segment boundary by one frame.
     if (!this.seg || !this.seg.active) return [];
     
+    const captionStart = this.seg.captionStart ?? this.seg.start;
+    const captionEnd = this.seg.captionEnd ?? this.seg.end;
     const segmentCaptions = this.captions.filter(cap => 
-      cap.end > this.seg.start && cap.start < this.seg.end
+      cap.end > captionStart && cap.start < captionEnd
     );
 
     // Select the cue that is genuinely active, not simply the last cue that ever
@@ -1303,10 +1305,34 @@ initStorage(){
     }
 
     wireAudioSegment(startSec,endSec,id){
+      const captionStart = startSec;
+      const captionEnd = endSec;
+      const hotspot = (this.config.hotspots || []).find(h => String(h.id) === String(id));
+      const segmentAudioFile = hotspot && hotspot.segmentAudioFile;
+      let captionOffset = 0;
+
+      // A segment-specific file starts at zero, eliminating unreliable mid-file
+      // seeks on hosts/browsers that do not honor media range requests correctly.
+      if (segmentAudioFile) {
+        const segmentSrc = this.resolveAsset(segmentAudioFile);
+        if (segmentSrc && this.audio.src !== segmentSrc && this.audio.currentSrc !== segmentSrc) {
+          this.audio.pause();
+          this.audio.src = segmentSrc;
+          this.audio.preload = 'auto';
+          this.audio.load();
+        }
+        captionOffset = captionStart;
+        startSec = 0;
+        endSec = Math.max(0.01, captionEnd - captionStart);
+      }
+
       const total = Math.max(0.01, endSec-startSec);
       this.seg = {
         start: startSec,
         end: endSec,
+        captionStart,
+        captionEnd,
+        captionOffset,
         active: true,
         currentId: id,
         currentVideo: this.seg.currentVideo,
@@ -1329,7 +1355,7 @@ initStorage(){
         if (fill) fill.style.width = `${(elapsed/total)*100}%`;
         if (tcur) tcur.textContent = fmt(elapsed);
         
-        this.updateCaption(now);
+        this.updateCaption(now + this.seg.captionOffset);
         
         if (now >= this.seg.end - 0.02){
           this.audio.pause();

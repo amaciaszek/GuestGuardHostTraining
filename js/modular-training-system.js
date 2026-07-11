@@ -1308,7 +1308,14 @@ initStorage(){
       const captionStart = startSec;
       const captionEnd = endSec;
       const hotspot = (this.config.hotspots || []).find(h => String(h.id) === String(id));
-      const segmentAudioFile = hotspot && hotspot.segmentAudioFile;
+      // Prefer an explicit segment path, otherwise use the standard Segments
+      // folder beside the chapter's preserved full-length audio master.
+      let segmentAudioFile = hotspot && hotspot.segmentAudioFile;
+      if (!segmentAudioFile && this.config.audioFile) {
+        const audioPath = String(this.config.audioFile).replace(/\\/g, '/');
+        const audioDir = audioPath.slice(0, audioPath.lastIndexOf('/'));
+        segmentAudioFile = `${audioDir}/Segments/${id}.m4a`;
+      }
       let captionOffset = 0;
 
       // A segment-specific file starts at zero, eliminating unreliable mid-file

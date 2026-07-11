@@ -1478,8 +1478,6 @@ initStorage(){
                   target <= this.audio.buffered.end(i) + 0.25) return true;
             }
           } catch (e) {}
-          // Whole file effectively loaded
-          if (this.audio.readyState >= 4 && this.audio.duration && target <= this.audio.duration) return true;
           // Start of file with enough data
           return target <= 0.25 && this.audio.readyState >= 2;
         };
@@ -1487,11 +1485,65 @@ initStorage(){
         const doSeekAndPlay = () => {
           if (isStale()) return;
           if (Math.abs(this.audio.currentTime - target) < 0.25) { beginPlay(); return; }
-          let fired = false;
-          const go = () => { if (fired) return; fired = true; this.audio.removeEventListener('seeked', go); if (isStale()) return; beginPlay(); };
-          this.audio.addEventListener('seeked', go, { once: true });
-          setTimeout(go, 2500); // fallback if 'seeked' never fires
-          try { this.audio.currentTime = target; } catch (e) { go(); }
+          let finished = false;
+          let attempts = 0;
+          let seekTimer = null;
+
+          const cleanupSeek = () => {
+            clearTimeout(seekTimer);
+            this.audio.removeEventListener('seeked', onSeeked);
+          };
+
+          const failSeek = () => {
+            if (finished) return;
+            finished = true;
+            cleanupSeek();
+            if (isStale()) return;
+            console.warn('%c\ud83d\udd0a AUDIO seek timed out', BAD,
+              'Could not reach ' + target.toFixed(2) + 's after ' + attempts + ' attempts.', snap());
+            if (status) status.textContent = 'Audio is still loading';
+            showPlayPrompt(() => startSeg());
+          };
+
+          const seekAgain = () => {
+            if (finished || isStale()) { cleanupSeek(); return; }
+            if (Math.abs(this.audio.currentTime - target) < 0.25) {
+              finished = true;
+              cleanupSeek();
+              beginPlay();
+              return;
+            }
+            if (attempts >= 3) { failSeek(); return; }
+
+            attempts += 1;
+            clearTimeout(seekTimer);
+            try {
+              // Pause while seeking. Calling play() before the seek settles is what
+              // allowed playback to start at 0 and caused the old recovery loop.
+              this.audio.pause();
+              this.audio.currentTime = target;
+            } catch (e) {
+              failSeek();
+              return;
+            }
+            seekTimer = setTimeout(seekAgain, 3000);
+          };
+
+          const onSeeked = () => {
+            if (finished || isStale()) { cleanupSeek(); return; }
+            // Some browsers emit seeked before the requested MP3 frame is actually
+            // selected. Verify currentTime instead of treating the event as success.
+            if (Math.abs(this.audio.currentTime - target) < 0.25) {
+              finished = true;
+              cleanupSeek();
+              beginPlay();
+            } else {
+              seekAgain();
+            }
+          };
+
+          this.audio.addEventListener('seeked', onSeeked);
+          seekAgain();
         };
 
         if (targetReachable()) {
@@ -1532,8 +1584,12 @@ initStorage(){
 
       this.audio.ontimeupdate = ()=>{
         if (!this.seg.active) return;
-        if (this.audio.currentTime < this.seg.start) this.audio.currentTime = this.seg.start;
-        if (this.audio.currentTime > this.seg.end) this.audio.currentTime = this.seg.end;
+        // Never assign currentTime while the browser is already seeking. The old
+        // lower-bound clamp repeatedly interrupted mid-file MP3 seeks and left the
+        // element playing at 0. Segment starts are enforced by startSeg instead.
+        if (!this.audio.seeking && this.audio.currentTime > this.seg.end) {
+          this.audio.currentTime = this.seg.end;
+        }
       };
 
       if (playPause){

@@ -326,7 +326,7 @@
     for (const filename of CHAPTER_FILES) {
       const key = filename.replace('.json', '');
       try {
-        const response = await fetch(`./${filename}`);
+        const response = await fetch(`json/${filename}`);
         if (!response.ok) throw new Error(`HTTP ${response.status}`);
         
         const data = await response.json();

@@ -1281,24 +1281,44 @@ body {
 }
 #viewerTitle { font-weight: 700; letter-spacing: .3px; }
 
-/* Audio transport buttons: round, tactile, accent on hover */
+/* Audio transport buttons: high contrast at rest, tactile accent on interaction */
 .audio-ui .btn,
 #playPause, #replay {
-  min-width: 44px;
-  height: 44px;
+  min-width: 48px;
+  height: 48px;
   border-radius: 50%;
-  background: #141b22;
-  border: 1px solid rgba(255,255,255,.16);
-  font-size: 18px;
-  transition: transform .12s ease, background .2s ease, border-color .2s ease, box-shadow .2s ease;
+  background: #263b49;
+  color: #f4fcff !important;
+  border: 2px solid #62d9eb;
+  font-size: 20px;
+  font-weight: 800;
+  line-height: 1;
+  text-shadow: 0 1px 2px rgba(0,0,0,.75);
+  box-shadow: 0 2px 8px rgba(0,0,0,.5), 0 0 0 1px rgba(255,255,255,.08) inset;
+  transition: transform .12s ease, background .2s ease, color .2s ease, border-color .2s ease, box-shadow .2s ease;
 }
 .audio-ui .btn:hover,
 #playPause:hover, #replay:hover {
   background: linear-gradient(135deg, #00e0ff, #0099cc);
-  color: #002028;
-  border-color: transparent;
+  color: #001b22 !important;
+  border-color: #8cf3ff;
+  text-shadow: none;
   transform: translateY(-1px);
   box-shadow: 0 6px 18px rgba(0,224,255,.35);
+}
+.audio-ui .btn:focus-visible,
+#playPause:focus-visible, #replay:focus-visible {
+  outline: 3px solid #fff;
+  outline-offset: 3px;
+  border-color: #00e0ff;
+  box-shadow: 0 0 0 6px rgba(0,224,255,.3);
+}
+.audio-ui .btn:active,
+#playPause:active, #replay:active {
+  transform: translateY(1px);
+  background: #00b9d6;
+  color: #001b22 !important;
+  text-shadow: none;
 }
 
 /* Progress bar: taller, rounder, soft glow */

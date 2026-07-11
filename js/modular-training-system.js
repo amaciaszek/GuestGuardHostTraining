@@ -8,19 +8,21 @@ class ModularTrainingSystem {
 
   // === [Captions Helpers] ===
   findCaptionsForTime(time){
-    // Filter captions to only those within the current segment
+    // Include every cue that overlaps the segment. Requiring a cue to be fully
+    // contained drops captions that straddle a segment boundary by one frame.
     if (!this.seg || !this.seg.active) return [];
     
     const segmentCaptions = this.captions.filter(cap => 
-      cap.start >= this.seg.start && cap.end <= this.seg.end
+      cap.end > this.seg.start && cap.start < this.seg.end
     );
-    
-    // Find all captions that have started (their start time has passed)
-    const activeCaptions = segmentCaptions.filter(cap => time >= cap.start);
-    
-    // Return the last 2 captions that have started (sliding window)
-    // This gives us the "current" and "previous" caption
-    return activeCaptions.slice(-2);
+
+    // Select the cue that is genuinely active, not simply the last cue that ever
+    // started. Keep the immediately preceding cue for the intended two-line view.
+    const currentIndex = segmentCaptions.findIndex(cap =>
+      time >= cap.start && time < cap.end
+    );
+    if (currentIndex < 0) return [];
+    return segmentCaptions.slice(Math.max(0, currentIndex - 1), currentIndex + 1);
   }
 
   updateCaption(time){

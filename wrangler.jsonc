@@ -1,5 +1,5 @@
 {
-  "name": "guestguard-host-training",
+  "name": "host-training",
   "compatibility_date": "2026-02-20",
   "assets": {
     "directory": "./"
